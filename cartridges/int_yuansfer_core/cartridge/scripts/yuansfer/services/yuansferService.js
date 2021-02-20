@@ -6,7 +6,62 @@
 const LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
 const yuansferWallet = require('../models/yuansferWallet');
 const yuansferHelper = require('*/cartridge/scripts/yuansfer/helpers/yuansferHelper');
-const yuansferAPI = require ('*/cartridge/static/yuansferHelper');
+
+/**
+ * Traverses a payload object to collect parameters and values to be passed
+ * as key/value pairs either as query string or application/x-www-form-urlencoded
+ * body.
+ *
+ * @param {Object} collector - An object to collect key/value pairs. Must provide
+ *   addParam(name, value) method. Could be dw.svc.Service.
+ * @param {Object} payload - Payload to collect parameters from. Can be acutal
+ *   payload or an object containing query string parameters.
+ * @param {string} prefix - Prefix to append to parameter names. Used recursively,
+ *   not needed for the intial call.
+ */
+function collectParams(collector, payload, prefix) {
+    if (payload && typeof payload === 'object') {
+        Object.keys(payload).forEach(function (key) {
+            let paramName = prefix && prefix.length ? prefix + '[' + (Array.isArray(payload) ? '' : key) + ']' : key;
+            let paramValue = payload[key];
+
+            if (paramValue === null || typeof paramValue === 'undefined') {
+                paramValue = '';
+            }
+
+            if (paramValue && typeof paramValue === 'object') {
+                collectParams(collector, paramValue, paramName);
+            } else {
+                collector.addParam(paramName, paramValue);
+            }
+        });
+    }
+}
+
+/**
+ * Converts a payload object into a application/x-www-form-urlencoded string
+ *
+ * @param {type} payload - Payload object
+ * @return {string} - URL encoded string for that payload
+ */
+function payloadToBody(payload) {
+    if (payload) {
+        const payloadParamsCollector = {
+            params: [],
+            addParam: function (name, value) {
+                this.params.push(encodeURIComponent(name) + '=' + encodeURIComponent(value));
+            }
+        };
+
+        collectParams(payloadParamsCollector, payload);
+
+        if (payloadParamsCollector.params.length) {
+            return payloadParamsCollector.params.join('&');
+        }
+    }
+
+    return null;
+}
 
 /**
  * Replaces credit card number (a number following card_number=) in a given
@@ -61,7 +116,7 @@ function maskCVC(msg) {
  * @returns {dw.svc.Service} - The created service definition.
  */
 function getYuansferServiceDefinition() {
-    return LocalServiceRegistry.createService('stripe.http.service', {
+    return LocalServiceRegistry.createService('yuansfer.http.service', {
 
         /**
          * A callback function to configure HTTP request parameters before
@@ -94,7 +149,6 @@ function getYuansferServiceDefinition() {
             if (requestObject.payload) {
                 return payloadToBody(requestObject.payload);
             }
-
             return null;
         },
 
@@ -161,7 +215,7 @@ function callService(requestObject) {
        throw new Error('Required requestObject parameter missing or incorrect.');
    }
 
-   const callResult = getYuansferService().call(requestObject);
+   const callResult = getYuansferServiceDefinition().call(requestObject);
 
     if (!callResult.ok) {
         throw new YuansferServiceError(callResult);
@@ -178,16 +232,15 @@ exports.securePay = {
             httpMethod: 'POST',
             payload: params
         };
-
         return callService(requestObject);
     },
 };
 
-// https://mapi.yuansfer.com/app-data-search/v3/refund
+// https://mapi.yuansfer.com/app-data-search/v3/cancel
 exports.refunds = {
     create: function (params) {
         var requestObject = {
-            endpoint: '/refund',
+            endpoint: '/cancel',
             httpMethod: 'POST',
             payload: params
         };

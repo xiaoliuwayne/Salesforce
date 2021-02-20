@@ -6,12 +6,25 @@ var server = require('server');
 
 var yuansferPaymentsHelper = require('*/cartridge/scripts/yuansfer/helpers/controllers/yuansferPaymentsHelper');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-
 /**
  * Entry point for handling payment intent creation and confirmation AJAX calls.
  */
 server.post('BeforePaymentAuthorization', csrfProtection.validateAjaxRequest, function (req, res, next) {
-    var responsePayload = yuansferPaymentsHelper.BeforePaymentAuthorization(req);
+    var params = {
+        amount : '1.00',
+        storeNo : '300014',
+        currency : 'USD',
+        merchantNo : '200043',
+        callbackUrl : 'https://wx.yuansfer.yunkeguan.com/wx',
+        terminal : 'ONLINE',
+        ipnUrl : 'https://wx.yuansfer.yunkeguan.com/wx',
+        reference : 'seq_1525922323',
+        vendor : 'alipay',
+        goodsInfo : '[{"goods_name":"Yuansfer","quantity":"1"}]',
+        timeout : '120',
+        verifySign:"b6bfd66531ae7c9499115c7480a2c8aa"
+    }
+    var responsePayload = yuansferPaymentsHelper.BeforePaymentAuthorization(params);
     res.json(responsePayload);
     next();
 });

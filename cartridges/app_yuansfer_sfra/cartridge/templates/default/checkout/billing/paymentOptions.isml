@@ -1,5 +1,5 @@
 <div class="form-nav billing-nav payment-information"
-     data-payment-method-id="CREDIT_CARD"
+     data-payment-method-id="YUANSFER_ALIPAY"
      data-is-new-payment="${pdict.customer.registeredUser && pdict.customer.customerPaymentInstruments.length ? false : true}"
 >
 
@@ -12,3 +12,4 @@
         <isinclude template="checkout/billing/paymentOptions/paymentOptionsContent" />
     </div>
 </div>
+

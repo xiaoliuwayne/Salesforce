@@ -3,10 +3,6 @@
 /* globals yuansfer */
 // v3
 
-const { param } = require("jquery");
-
-// var paymentMethodOptions = document.querySelectorAll('input[name$="_selectedPaymentMethodID"]');
-
 var newCardFormContainer = document.getElementById('new-card-form-container');
 var cardIdInput = document.getElementById('yuansfer_source_id');
 var cardNumberInput = document.getElementById('yuansfer_card_number');
@@ -18,16 +14,6 @@ var cardExpYearInput = document.getElementById('yuansfer_card_expiration_year');
 
 var placeOrderButton = document.querySelector('button[name=submit]');
 var forceSubmit = false;
-// function getSelectedPaymentMethod() {
-//     for (var i = 0; i < paymentMethodOptions.length; i++) {
-//         var paymentMethodOption = paymentMethodOptions[i];
-//         if (paymentMethodOption.checked) {
-//             return paymentMethodOption.value;
-//         }
-//     }
-
-//     return null;
-// }
 
 function isSavedCard() {
     return newCardFormContainer && newCardFormContainer.style.display === 'none';
@@ -103,22 +89,6 @@ function initIdeal() {
     idealBankElement.mount('#ideal-bank-element');
 }
 
-function initYuansfer() {
-    var merchantNo = document.getElementById('yuansfer_merchant_no').value;
-    var storeNo = document.getElementById('yuansfer_store_no').value;
-    var token = document.getElementById('yuansfer_token').value;
-    var env = document.getElementById('yuansfer_env').value;
-    var isvFlag = 0;
-    Yuansfer.init({
-        merchantNo: merchantNo,
-        storeNo: storeNo,
-        token: token,
-        isvFlag: isvFlag,
-        env: env
-    })
-    return Yuansfer;
-}
-
 function populateBillingData(pr) {
     var payerName = pr.payerName;
     if (payerName) {
@@ -157,8 +127,34 @@ function populateBillingData(pr) {
     stateElement.value = pr.paymentMethod.billing_details.address.state;
 }
 
+function calculateVerifySign(contents,token) {
+    //1.对参数进行排序，然后用a=1&b=2..的形式拼接
+    var sortArray = [];
+
+    Object.keys(contents).sort().forEach(function (k) {
+      if (contents[k] || contents[k] === false) {
+        sortArray.push(k + '=' + contents[k]);
+      }
+    });
+
+    //对token进行md5，得到的结果追加到sortArray之后
+    sortArray.push(MD5(token));
+
+    var tempStr = sortArray.join('&');
+    // console.log('tempStr:', tempStr);
+
+    //对tempStr 再进行一次md5加密得到verifySign
+    var verifySign = MD5(tempStr);
+    // console.log('veirfySign:', verifySign)
+
+    return verifySign;
+  }
+
 function getSecurePayPayload() {
-    var YuansferBasicInfo = initYuansfer();
+    var merchantNo = document.getElementById('yuansfer_merchant_no').value;
+    var storeNo = document.getElementById('yuansfer_store_no').value;
+    var env = document.getElementById('yuansfer_env').value;
+    var token = document.getElementById('yuansfer_token').value;
     var yuansferOrderNumberInput = document.getElementById('yuansfer_order_number').value;
     var yuansferReturnURLInput = document.getElementById('yuansfer_return_url');
     var yuansferOrderAmountInput = document.getElementById('yuansfer_order_amount');
@@ -174,13 +170,12 @@ function getSecurePayPayload() {
     var returnURL = yuansferReturnURLInput.value;
     var terminal = "ONLINE";
     var param = {
-        merchantNo:YuansferBasicInfo.merchantNo,
-        storeNo:YuansferBasicInfo.storeNo,
-        env:YuansferBasicInfo.env,
-        token:YuansferBasicInfo.token,
+        merchantNo: merchantNo,
+        storeNo: storeNo,
+        env: env,
         amount: amountToPay,                       
         currency: currencyCode,        
-        vendor: vendor,                             
+        vendor: null,                             
         callbackUrl: returnURL,      
         terminal: terminal,            
         reference: yuansferOrderNumberInput,          
@@ -188,8 +183,8 @@ function getSecurePayPayload() {
         note: yuansferOrderNoteInput,                                 
         goodsInfo: yuansferOrderGoodsInput
     }
-    var verifySign = Yuansfer.calculateVerifySign(param);
-    param[verifySign] =verifySign;
+    var verifySign = calculateVerifySign(param,token);
+    param["verifySign"] =verifySign;
     return param;
 }
 
@@ -203,21 +198,18 @@ function processSecurePayResult(result) {
 }
 
 document.querySelector('button.submit-payment').addEventListener('click', function (event) {
-    let billingForm = document.getElementById('dwfrm_billing');
-    $(billingForm).find('.form-control.is-invalid').removeClass('is-invalid');
-    if (!billingForm.reportValidity()) {
-        billingForm.focus();
-        billingForm.scrollIntoView();
-        return;
-    }
-
-    event.stopImmediatePropagation();
     var activeTabId = $('.tab-pane.active').attr('id');
     var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields input.form-control';
     var selectedPaymentMethod = $(paymentInfoSelector).val();
+    window.localStorage.setItem('yuansfer_payment_method', selectedPaymentMethod);
+});
+
+function getGlobalParams() {
+
+    var selectedPaymentMethod = window.localStorage.getItem('yuansfer_payment_method');
     var params = getSecurePayPayload();
 
-    window.localStorage.setItem('yuansfer_payment_method', selectedPaymentMethod);
+    
     switch (selectedPaymentMethod) {
         case 'CREDIT_CARD':
             if (prUsed) {
@@ -248,35 +240,35 @@ document.querySelector('button.submit-payment').addEventListener('click', functi
             }
             break;
         case 'YUANSFER_WECHATPAY':
-            event.preventDefault(); 
+            
             params.vendor = "wechatpay";
             break;
         case 'YUANSFER_ALIPAY':
-            event.preventDefault();
+            
             params.vendor = "alipay";
             break;
         case 'YUANSFER_DANA':
-            event.preventDefault();
+           
             params.vendor = "dana";
             break;
         case 'YUANSFER_ALIPAYHK':
-            event.preventDefault();
+            
             params.vendor = "alipay_hk";
             break;
         case 'YUANSFER_GCASH':
-            event.preventDefault();
+            
             params.vendor = "gcash";
             break;
         case 'YUANSFER_KAKAOPAY':
-            event.preventDefault();
+            
             params.vendor = "kakaopay";
             break;
         default:
-            event.preventDefault();
 
             alert('Unknown payment method');
     }
-})
+    return params;
+}
 
 function init() {
     if (newCardFormContainer) {
@@ -323,13 +315,15 @@ function handleServerResponse(response) {
 
 document.querySelector('button.place-order').addEventListener('click', function (event) {
     if (forceSubmit) return true;
-
-
+    var currentParams = getGlobalParams();
     $.ajax({
         url: document.getElementById('beforePaymentAuthURL').value,
         method: 'POST',
         dataType: 'json',
-        data: params
+        headers: { 'params': JSON.stringify(currentParams)},
+        data: {
+            csrf_token: $('[name="csrf_token"]').val()
+        }
     }).done(function (json) {
         handleServerResponse(json);
     }).fail(function (msg) {
@@ -375,3 +369,47 @@ function processQRCodeResult(result,vendor) {
         document.getElementById('dwfrm_billing').submit();
     }
 }
+
+var ready = (callback) => {
+    if (document.readyState !== 'loading') {
+        callback();
+    } else {
+        document.addEventListener('DOMContentLoaded', callback);
+    }
+};
+
+ready(() => {
+    // eslint-disable-next-line no-unused-vars
+    document.querySelector('.payment-summary .edit-button').addEventListener('click', (e) => {
+        var list = document.querySelector('.payment-form').querySelectorAll('.tab-pane');
+        for (var i = 0; i < list.length; ++i) {
+            list[i].classList.remove('active');
+        }
+
+        var activePaymentMethod = document.getElementsByClassName('nav-link credit-card-tab active');
+        if (activePaymentMethod.length) {
+            var selectedPaymentContent = document.getElementById(activePaymentMethod[0].attributes['href'].value.replace('#', ''));
+
+            if (selectedPaymentContent) {
+                selectedPaymentContent.classList.add('active');
+            }
+        }
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    document.querySelector('.shipping-summary .edit-button').addEventListener('click', (e) => {
+        var list = document.querySelector('.payment-form').querySelectorAll('.tab-pane');
+        for (var i = 0; i < list.length; ++i) {
+            list[i].classList.remove('active');
+        }
+
+        var activePaymentMethod = document.getElementsByClassName('nav-link credit-card-tab active');
+        if (activePaymentMethod.length) {
+            var selectedPaymentContent = document.getElementById(activePaymentMethod[0].attributes['href'].value.replace('#', ''));
+            if (selectedPaymentContent) {
+                selectedPaymentContent.classList.add('active');
+            }
+        }
+    });
+});
+

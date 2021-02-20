@@ -8,7 +8,7 @@ server.prepend('Start', function (req, res, next) {
     var URLRedirectMgr = require('dw/web/URLRedirectMgr');
     var yuansferHelper = require('*/cartridge/scripts/yuansfer/helpers/yuansferHelper');
 
-    // Stripe changes BEGIN
+    // Yuansfer changes BEGIN
     if (yuansferHelper.isStripeEnabled() && URLRedirectMgr.getRedirectOrigin() === '/.well-known/apple-developer-merchantid-domain-association') { // Intercept the incoming path request
         res.render('stripe/util/apple');
         return null;

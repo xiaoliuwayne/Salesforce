@@ -6,7 +6,7 @@
 <isif condition="${yuansferEnabled}">
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/yuansfer.js');
+        assets.addJs('/js/md5.js');
     </isscript>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
@@ -46,7 +46,6 @@
                         value="${paymentOption.ID}"
                     >
                     <input type="hidden" name="cardNumber" value="" class="cardNumber" id="cardNumber">
-                    <input type="hidden" name="yuansfer_source_id" id="yuansfer_source_id">
                     <iscomment> <isinclude template="default/yuansfer/checkout/billing/sfra_cardform" /> </iscomment>
                 </fieldset>
             </div>
@@ -75,7 +74,6 @@
                     name="${pdict.forms.billingForm.paymentMethod.htmlName}"
                     value="${paymentOption.ID}"
                 >
-                <input type="hidden" name="yuansfer_source_id" id="yuansfer_source_id">
             </fieldset>
         </div>
     </isif>

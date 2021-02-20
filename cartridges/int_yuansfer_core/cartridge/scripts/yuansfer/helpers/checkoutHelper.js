@@ -4,16 +4,6 @@
 
 'use strict';
 var yuansferHelper = require('*/cartridge/scripts/yuansfer/helpers/yuansferHelper');
-
-/**
- * Returns the country for Payment Request button from Site Preferences.
- *
- * @return {string} - Payment Request button country
- */
-exports.getPRCountry = function () {
-    return require('dw/system/Site').current.getCustomPreferenceValue('YuansferAccountCountryCode');
-};
-
 /**
  * Checks if Yuansfer integration for card payments is enabled.
  *
@@ -70,6 +60,16 @@ function isYuansferPaymentInstrument(paymentInstrument) {
     const yuansferPaymentInstrumentRegex = /(^CREDIT_CARD$|^Yuansfer_.+)/i;
     return yuansferPaymentInstrumentRegex.test(paymentInstrument.paymentMethod);
 }
+
+
+exports.confirmPaymentIntent = function (paymentIntentId) {
+    const yuansferService = require('*/cartridge/scripts/yuansfer/services/yuansferService');
+
+    const paymentIntent = yuansferService.paymentIntents.confirm(paymentIntentId);
+
+    return paymentIntent;
+};
+
 
 /**
  * Check if customer cards should always be saved for guest customers
@@ -246,14 +246,6 @@ exports.createSecurePay = function (params) {
     return securePay;
 };
 
-exports.confirmPaymentIntent = function (paymentIntentId) {
-    const yuansferService = require('*/cartridge/scripts/yuansfer/services/yuansferService');
-
-    const paymentIntent = yuansferService.paymentIntents.confirm(paymentIntentId);
-
-    return paymentIntent;
-};
-
 exports.getSiteID = function () {
     return require('dw/system/Site').getCurrent().getID();
 };
@@ -385,18 +377,43 @@ exports.isAPMOrder = function (order) {
 };
 
 exports.refundCharge = function (order) {
-    const PaymentInstrument = require('dw/order/PaymentInstrument');
-    const cardPaymentInstruments = order.getPaymentInstruments(PaymentInstrument.METHOD_CREDIT_CARD);
-    const cardPaymentInstrument = cardPaymentInstruments.length && cardPaymentInstruments[0];
-    const chargeId = cardPaymentInstrument && cardPaymentInstrument.custom.yuansferChargeID;
+    const crypto = require('crypto');
+    var yuansferHelper=require('*/cartridge/scripts/yuansfer/helpers/yuansferHelper');
 
-    if (chargeId) {
+    var yuansferTransactionNo = exports.getTransactionNo(order.yuansferOrderNumber);
+    var yuansferReference = exports.getReference(order.yuansferOrderNumber);
+    var yuansferMerchantNo = yuansferHelper.getYuansferMerchantNo();
+    var yuansferStoreNo = yuansferHelper.getYuansferStoreNo();
+    var yuansferToken = yuansferHelper.getYuansferToken();
+    var params = {
+        merchantNo:yuansferMerchantNo,
+        storeNo: yuansferToken
+    };
+    var verifySign;
+    if(yuansferTransactionNo){
+        params["transactionNo"] = yuansferTransactionNo;
+    }else if(yuansferReference){
+        params["reference"] = yuansferTransactionNo;
+    }
+    if(params.transactionNo||params.reference){
+        var sortArray = [];
+        Object.keys(contents).sort().forEach(function (k) {
+            if (contents[k] || contents[k] === false) {
+                sortArray.push(k + '=' + contents[k]);
+            }
+        });
+
+        sortArray.push(crypto.createHash('md5').update(yuansferToken).digest("hex"));
+
+        var tempStr = sortArray.join('&');
+        verifySign = crypto.createHash('md5').update(tempStr).digest("hex");
+        params["verifySign"] = verifySign;
+    }
+    if (params.verifySign) {
         const yuansferService = require('*/cartridge/scripts/yuansfer/services/yuansferService');
 
         try {
-            yuansferService.refunds.create({
-                charge: chargeId
-            });
+            yuansferService.refunds.create(params);
         } catch (e) {
             let errorMessage = 'Failed to refund charge ' + chargeId;
             errorMessage += '\n Original error was: ' + e.message;
@@ -618,4 +635,30 @@ exports.getAlipayHKQRCodeURL = function (orderNumber) {
     var order = OrderMgr.getOrder(orderNumber);
 
     return !empty(order) ? order.custom.yuansferAlipayHKQRCodeURL : '';
+};
+
+/**
+ * Get TransactionNo by Order Number
+ * @param {Integer} orderNumber to get TransactionNo
+ * @returns {string} TransactionNo
+ */
+exports.getTransactionNo = function (orderNumber) {
+    const OrderMgr = require('dw/order/OrderMgr');
+
+    var order = OrderMgr.getOrder(orderNumber);
+
+    return !empty(order) ? order.custom.yuansferTransactionNo : '';
+};
+
+/**
+ * Get Reference by Order Number
+ * @param {Integer} orderNumber to get Reference
+ * @returns {string} ReferenceNo
+ */
+exports.getReference = function (orderNumber) {
+    const OrderMgr = require('dw/order/OrderMgr');
+
+    var order = OrderMgr.getOrder(orderNumber);
+
+    return !empty(order) ? order.custom.yuansferReference : '';
 };

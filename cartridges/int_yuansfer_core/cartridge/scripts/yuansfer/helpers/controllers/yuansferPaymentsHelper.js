@@ -53,7 +53,7 @@ function beforePaymentAuthorization(params) {
     var responsePayload;
     var checkoutHelper = require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper');
     try {
-        var basket = BasketMgr.getCurrentBasket();
+        var basket = BasketMgr.currentOrNewBasket;
         if (basket) {
             var yuansferPaymentInstrument = checkoutHelper.getYuansferPaymentInstrument(basket);
 
@@ -148,7 +148,6 @@ function handleAPM(sfra) {
 
     var redirectUrl = '';
     try {
-        const yuansferService = require('*/cartridge/scripts/yuansfer/services/yuansferService');
 
         if (sfra) {
             redirectUrl = URLUtils.url('Checkout-Begin', 'stage', 'placeOrder');
