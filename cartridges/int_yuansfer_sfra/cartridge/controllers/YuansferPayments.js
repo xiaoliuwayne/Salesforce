@@ -32,6 +32,21 @@ server.post('BeforePaymentAuthorization',server.middleware.https, csrfProtection
 });
 
 /**
+ * An callback entry point to handle returns from payment.
+ */
+
+server.get('ConfirmPayment', function (req, res, next) {
+    const confirmPaymentHelper = require('*/cartridge/scripts/yuansfer/helpers/confirmPaymentHelper');
+    var success = confirmPaymentHelper.processIncomingNotification();
+
+    res.setStatusCode(success ? 200 : 500);
+    res.json({
+        success: !!success
+    });
+    next();
+});
+
+/**
  * An entry point to handle returns from alternative payment methods.
  */
 

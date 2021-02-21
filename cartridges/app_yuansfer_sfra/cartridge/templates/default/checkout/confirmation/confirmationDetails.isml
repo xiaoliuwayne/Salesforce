@@ -1,17 +1,7 @@
-<isdecorate template="common/layout/page">
-    <isscript>
-        var assets = require('*/cartridge/scripts/assets.js');
-        assets.addCss('/css/checkout/checkout.css');
-        assets.addJs('/js/checkoutRegistration.js');
-    </isscript>
-    <isset name="isConfirmation" value="true" scope="page" />
-    <isif condition="${pdict.reportingURLs && pdict.reportingURLs.length}">
-        <isinclude template="reporting/reportingUrls" />
-    </isif>
+<isset name="yuansferCheckoutHelper" value="${require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper')}" scope="page" />
+<isset name="yuansferPaymentStatus" value="${yuansferCheckoutHelper.getPaymentStatus(pdict.order.orderNumber)}" scope="page" />
 
-    <div class="hero slant-down hero-confirmation">
-        <h1 class="page-title">${Resource.msg('title.thank.you.page','confirmation',null)}</h1>
-    </div>
+<isif condition="${!yuansferPaymentStatus && isConfirmation == null}">
     <div class="container receipt <isif condition="${pdict.order.shipping.length > 1}">multi-ship</isif>">
         <div class="row">
             <div class="${pdict.returningCustomer ? 'col-sm-6 offset-sm-3' : 'col-sm-6 offset-sm-3 offset-md-0'}">
@@ -55,31 +45,35 @@
                 	<isinclude template="checkout/kakaopayqrcode" />
                 <iselseif condition="${isGCash}"/>
                 	<isinclude template="checkout/gcashqrcode" />
-                <iselse/>
-	                <isif condition="${pdict.order.orderStatus == dw.order.Order.ORDER_STATUS_CREATED}">
-	                    <h2>${Resource.msg('yuansfer.confirmation.thankyou','yuansfer',null)}</h2>
-	                    <p class="order-thank-you-email-msg">${Resource.msg('yuansfer.confirmation.shippingnote', 'yuansfer', null)}</p>
-	                <iselse/>
-	                    <h2 class="order-thank-you-msg">${Resource.msg('msg.placed.order.thank.you','confirmation',null)}</h2>
-	                    <p class="order-thank-you-email-msg"><isprint value="${Resource.msgf('info.receive.email.confirmation', 'confirmation', null, pdict.order.orderEmail)}" encoding="htmlcontent" /></p>
-	                </isif>
                 </isif>
             </div>
         </div>
-        <div class="row">
-            <isif condition="${pdict.returningCustomer === false}">
-                <div class="col-sm-6 offset-sm-3 offset-md-0 push-md-6">
-                    <isinclude template="checkout/confirmation/confirmationCreateAccount" />
-                </div>
-            </isif>
-            <div class="${pdict.returningCustomer ? 'col-sm-6 offset-sm-3' : 'col-sm-6 offset-sm-3 offset-md-0 pull-md-6' }">
-                <isinclude template="checkout/confirmation/confirmationDetails" />
-                <div class="mb-3">
-	                <a href="${URLUtils.url('Home-Show')}" class="btn btn-primary btn-block order-confirmation-continue-shopping" role="button" aria-pressed="true">
-	                    ${Resource.msg('button.continue.shopping','confirmation',null)}
-	                </a>
-                </div>
-            </div>
-        </div>
     </div>
-</isdecorate>
+</isif>
+<div class="card confirm-details">
+    <div class="card-header">
+        <h2 class="card-header-custom">${Resource.msg('title.receipt', 'confirmation', null)}</h2>
+    </div>
+
+    <div class="card-body">
+        <p>
+            <span class="summary-section-label order-number-label">${Resource.msg('label.order.number', 'confirmation', null)}</span>
+            <span class="summary-details order-number">${pdict.order.orderNumber}</span>
+            <br/>
+            <span class="summary-section-label order-date-label">${Resource.msg('label.order.date', 'confirmation', null)}</span>
+            <span class="summary-details order-date"><isprint value="${pdict.order.creationDate}" style="DATE_SHORT"/></span>
+        </p>
+
+        <isinclude template="checkout/shipping/shippingSummary" />
+        <isinclude template="checkout/billing/billingSummary" />
+
+    </div>
+</div>
+
+<isinclude template="checkout/orderProductSummary" />
+
+<div class="card checkout-order-total-summary">
+    <div class="card-body order-total-summary">
+        <isinclude template="checkout/orderTotalSummary" />
+    </div>
+</div>

@@ -156,7 +156,7 @@ function calculateVerifySign(contents,token) {
     var env = document.getElementById('yuansfer_env').value;
     var token = document.getElementById('yuansfer_token').value;
     var yuansferOrderNumberInput = document.getElementById('yuansfer_order_number').value;
-    var yuansferReturnURLInput = document.getElementById('yuansfer_return_url');
+    var yuansferCallbackURLInput = document.getElementById('yuansfer_callback_url');
     var yuansferOrderAmountInput = document.getElementById('yuansfer_order_amount');
     var yuansferOrderCurrencyInput = document.getElementById('yuansfer_order_currency');
     var yuansferOrderNoteInput = document.getElementById('yuansfer_order_note');
@@ -169,14 +169,16 @@ function calculateVerifySign(contents,token) {
     // var settleCurrencyCode = yuansferOrderSettleCurrencyInput.value;
     var returnURL = yuansferReturnURLInput.value;
     var terminal = "ONLINE";
+    yuansferCallbackURLInput = yuansferCallbackURLInput + "?transactionNo={transactionNo}&amount={amount}&status={status}&reference={reference}"
     var param = {
         merchantNo: merchantNo,
         storeNo: storeNo,
         env: env,
         amount: amountToPay,                       
-        currency: currencyCode,        
+        currency: currencyCode,    
+        settleCurrency:currencyCode,    
         vendor: vendor,                             
-        callbackUrl: returnURL,      
+        callbackUrl: yuansferCallbackURLInput+,      
         terminal: terminal,            
         reference: yuansferOrderNumberInput,          
         description: yuansferOrderDescriptionInput,      

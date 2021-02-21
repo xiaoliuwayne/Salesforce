@@ -187,35 +187,6 @@ function getSecurePayPayload() {
     };
 }
 
-function processCreateSourceResult(result) {
-    if (result.error) {
-        alert(result.error.message);
-    } else {
-        var sourceIdInputs = document.getElementsByName('yuansfer_source_id');
-        var sourceClientSecretInput = document.getElementById('yuansfer_source_client_secret');
-        var redirectURLInput = document.getElementById('yuansfer_redirect_url');
-
-        sourceIdInputs.forEach(function (input) {
-            input.value = result.source.id;
-        });
-
-        sourceClientSecretInput.value = result.source.client_secret;
-        if (result.source.redirect) {
-            redirectURLInput.value = result.source.redirect.url;
-        }
-
-        // window.location.replace(result.source.redirect.url);
-        // v1
-        // eslint-disable-next-line no-unused-vars
-        $('body').on('checkout:updateCheckoutView', function (e, data) {
-            window.location.replace(result.source.redirect.url);
-        });
-
-        $('.submit-payment').click();
-        $.spinner().start();
-    }
-}
-
 function handleServerResponse(response) {
     if (response.error) {
         alert(response.error.message);

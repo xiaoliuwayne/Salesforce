@@ -645,10 +645,12 @@ exports.getTransactionNo = function (orderNumber) {
  * @param {Integer} orderNumber to get Reference
  * @returns {string} ReferenceNo
  */
-exports.getReference = function (orderNumber) {
+exports.getPaymentStatus = function (orderNumber) {
     const OrderMgr = require('dw/order/OrderMgr');
 
     var order = OrderMgr.getOrder(orderNumber);
 
-    return !empty(order) ? order.custom.yuansferReference : '';
+    return !empty(order) ? order.custom.yuansferIsPaymentInReview : '';
 };
+
+
