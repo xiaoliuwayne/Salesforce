@@ -26,7 +26,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
     var PaymentMgr = require('dw/order/PaymentMgr');
     var isYuansfer = false;
     var currentBasket = BasketMgr.getCurrentBasket();
-
+    
     if (!currentBasket) {
         res.json({
             error: true,
@@ -37,7 +37,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         });
         return next();
     }
-
     collections.forEach(currentBasket.getPaymentInstruments(), function (paymentInstrument) {
         var paymentProcessor = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod()).getPaymentProcessor();
 
@@ -144,10 +143,23 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         return null;
     }
 
+    var test =currentBasket.custom.yuansferWeChatPayQRCodeURL;
+    var test2 = currentBasket.custom.yuansferIsPaymentInReview;
     // Yuansfer changes BEGIN
     const yuansferCheckoutHelper = require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper');
     var order = yuansferCheckoutHelper.createOrder(currentBasket);
     // Yuansfer changes END
+    var testorder = OrderMgr.getOrder(order.orderNo);
+    const Order = require('dw/order/Order');
+    Transaction.wrap(function () {
+        if (testorder.status === Order.ORDER_STATUS_CREATED) {
+            OrderMgr.placeOrder(testorder);
+        }
+
+        testorder.custom.stripeIsPaymentIntentInReview = false; // eslint-disable-line no-param-reassign
+        testorder.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
+        testorder.setExportStatus(Order.EXPORT_STATUS_READY);
+    });
 
     if (!order) {
         res.json({
@@ -236,6 +248,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         orderToken: order.orderToken,
         continueUrl: URLUtils.url('Order-Confirm').toString()
     });
+    
 
     this.emit('route:Complete', req, res);
     return null;

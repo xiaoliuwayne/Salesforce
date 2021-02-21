@@ -4,7 +4,7 @@
     var assets = require('*/cartridge/scripts/assets.js');
 </isscript>
 
-<isset name="yuansferWechatPayQRCodeURL" value="${yuansferCheckoutHelper.getWechatPayQRCodeURL(pdict.order.orderNumber)}" scope="page" />
+<isset name="yuansferWechatPayQRCodeURL" value="${yuansferCheckoutHelper.getWeChatPayQRCodeURL(pdict.order.orderNumber)}" scope="page" />
 
 <div id="wechat-qrcode-wrapper">
 

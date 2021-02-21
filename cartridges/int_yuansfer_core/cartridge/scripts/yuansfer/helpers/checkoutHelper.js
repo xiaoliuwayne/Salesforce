@@ -148,7 +148,7 @@ exports.createYuansferPaymentInstrument = function (lineItemCtnr, paymentMethodI
         }
 
         if ('yuansferWeChatPayQRCodeURL' in params) {
-            paymentInstrument.custom.yuansferWeChatQRCodeURL = params.yuansferWeChatQRCodeURL;
+            paymentInstrument.custom.yuansferWeChatPayQRCodeURL = params.yuansferWeChatPayQRCodeURL;
         }
 
         if ('yuansferAlipayQRCodeURL' in params) {
@@ -226,22 +226,11 @@ exports.createYuansferPaymentInstrument = function (lineItemCtnr, paymentMethodI
 exports.createSecurePay = function (params) {
 
     const reference =  yuansferHelper.getYuansferToken()+params.reference;
-    const createSecurePayPayload = {
-        vendor: params.vendor,
-        amount: params.amount,
-        currency: params.currency,
-        reference: reference,
-        ipnUrl: "http://zk-tys.yunkeguan.com/ttest/test",
-        callback:"http://zk-tys.yunkeguan.com/ttest/test2?status={status}",
-        description:"test",
-        note:"testnote",
-        terminal:params.terminal,
-        goodsInfo:params.goodsInfo
-    };
+    params.reference = reference;
 
     const yuansferService = require('*/cartridge/scripts/yuansfer/services/yuansferService');
 
-    const securePay = yuansferService.securePay.create(createSecurePayPayload);
+    const securePay = yuansferService.securePay.create(params);
 
     return securePay;
 };
@@ -339,6 +328,7 @@ exports.createOrder = function (currentBasket) {
     try {
         order = Transaction.wrap(function () {
             var newOrder;
+            
             if (yuansferOrderNumber) {
                 newOrder = OrderMgr.createOrder(currentBasket, yuansferOrderNumber);
             } else {

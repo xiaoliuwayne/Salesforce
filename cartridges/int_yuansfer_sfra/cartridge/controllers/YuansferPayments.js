@@ -9,7 +9,9 @@ var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 /**
  * Entry point for handling payment intent creation and confirmation AJAX calls.
  */
-server.post('BeforePaymentAuthorization', csrfProtection.validateAjaxRequest, function (req, res, next) {
+server.post('BeforePaymentAuthorization',server.middleware.https, csrfProtection.validateAjaxRequest, function (req, res, next) {
+    
+    var test= req.querystring;
     var params = {
         amount : '1.00',
         storeNo : '300014',

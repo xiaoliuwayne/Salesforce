@@ -150,7 +150,7 @@ function calculateVerifySign(contents,token) {
     return verifySign;
   }
 
-function getSecurePayPayload() {
+  function getSecurePayPayload(vendor) {
     var merchantNo = document.getElementById('yuansfer_merchant_no').value;
     var storeNo = document.getElementById('yuansfer_store_no').value;
     var env = document.getElementById('yuansfer_env').value;
@@ -175,7 +175,7 @@ function getSecurePayPayload() {
         env: env,
         amount: amountToPay,                       
         currency: currencyCode,        
-        vendor: null,                             
+        vendor: vendor,                             
         callbackUrl: returnURL,      
         terminal: terminal,            
         reference: yuansferOrderNumberInput,          
@@ -187,6 +187,7 @@ function getSecurePayPayload() {
     param["verifySign"] =verifySign;
     return param;
 }
+
 
 function processSecurePayResult(result) {
     if (result.ret_code!="000100") {
@@ -202,12 +203,37 @@ document.querySelector('button.submit-payment').addEventListener('click', functi
     var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields input.form-control';
     var selectedPaymentMethod = $(paymentInfoSelector).val();
     window.localStorage.setItem('yuansfer_payment_method', selectedPaymentMethod);
+    
+    if (forceSubmit) return true;
+    var currentParams = getGlobalParams();
+    var token = $('[name="csrf_token"]').val();
+    $.ajax({
+        url: document.getElementById('beforePaymentAuthURL').value,
+        type: 'POST',
+        dataType:"json",
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        data: {
+            'csrf_token':token,
+            'params':currentParams
+        }
+    }).done(function (json) {
+        handleServerResponse(json);
+    }).fail(function (msg) {
+        if (msg.responseJSON.redirectUrl) {
+            window.location.href = msg.responseJSON.redirectUrl;
+        } else {
+            alert(msg.error);
+        }
+    });   
 });
 
 function getGlobalParams() {
 
     var selectedPaymentMethod = window.localStorage.getItem('yuansfer_payment_method');
-    var params = getSecurePayPayload();
+    // var params = getSecurePayPayload();
+    let params;
 
     
     switch (selectedPaymentMethod) {
@@ -241,27 +267,27 @@ function getGlobalParams() {
             break;
         case 'YUANSFER_WECHATPAY':
             
-            params.vendor = "wechatpay";
+            // params.vendor = "wechatpay";
+            params = getSecurePayPayload("wechatpay")
             break;
         case 'YUANSFER_ALIPAY':
-            
-            params.vendor = "alipay";
+            params = getSecurePayPayload("wechatpay")
             break;
         case 'YUANSFER_DANA':
-           
-            params.vendor = "dana";
+
+            params = getSecurePayPayload("dana")
             break;
         case 'YUANSFER_ALIPAYHK':
             
-            params.vendor = "alipay_hk";
+            params = getSecurePayPayload("alipay_hk")
             break;
         case 'YUANSFER_GCASH':
             
-            params.vendor = "gcash";
+            params = getSecurePayPayload("gcash")
             break;
         case 'YUANSFER_KAKAOPAY':
             
-            params.vendor = "kakaopay";
+            params = getSecurePayPayload("kakaopay")
             break;
         default:
 
@@ -293,6 +319,9 @@ function handleServerResponse(response) {
                     url: document.getElementById('beforePaymentAuthURL').value,
                     method: 'POST',
                     dataType: 'json',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                     data: {
                         csrf_token: $('[name="csrf_token"]').val()
                     }
@@ -313,27 +342,31 @@ function handleServerResponse(response) {
     }
 }
 
-document.querySelector('button.place-order').addEventListener('click', function (event) {
-    if (forceSubmit) return true;
-    var currentParams = getGlobalParams();
-    $.ajax({
-        url: document.getElementById('beforePaymentAuthURL').value,
-        method: 'POST',
-        dataType: 'json',
-        headers: { 'params': JSON.stringify(currentParams)},
-        data: {
-            csrf_token: $('[name="csrf_token"]').val()
-        }
-    }).done(function (json) {
-        handleServerResponse(json);
-    }).fail(function (msg) {
-        if (msg.responseJSON.redirectUrl) {
-            window.location.href = msg.responseJSON.redirectUrl;
-        } else {
-            alert(msg.error);
-        }
-    });   
-});
+// document.querySelector('button.place-order').addEventListener('click', function (event) {
+//     if (forceSubmit) return true;
+//     var currentParams = getGlobalParams();
+//     var token = $('[name="csrf_token"]').val();
+//     $.ajax({
+//         url: document.getElementById('beforePaymentAuthURL').value,
+//         type: 'POST',
+//         dataType:"json",
+//         headers: {
+//             'X-Requested-With': 'XMLHttpRequest'
+//         },
+//         data: {
+//             'csrf_token':token,
+//             'params':currentParams
+//         }
+//     }).done(function (json) {
+//         handleServerResponse(json);
+//     }).fail(function (msg) {
+//         if (msg.responseJSON.redirectUrl) {
+//             window.location.href = msg.responseJSON.redirectUrl;
+//         } else {
+//             alert(msg.error);
+//         }
+//     });   
+// });
 
 function processQRCodeResult(result,vendor) {
     if (result.ret_code!="000100") {

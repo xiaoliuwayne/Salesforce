@@ -17,10 +17,7 @@ function Handle(args) {
     const paramsMap = request.httpParameterMap;
     const selectedPaymentMethodID = paramsMap.dwfrm_billing_paymentMethods_selectedPaymentMethodID.stringValue || paramsMap.dwfrm_billing_paymentMethod.stringValue;// app.getForm('billing').object.paymentMethods.selectedPaymentMethodID.value;
     const params = {
-        sourceId: paramsMap.yuansfer_source_id.stringValue,
-        bankAccountTokenId: paramsMap.yuansfer_bank_account_token_id.stringValue,
-        bankAccountToken: paramsMap.yuansfer_bank_account_token.stringValue,
-        yuansferWeChatQRCodeURL: paramsMap.yuansfer_wechat_qrcode_url.stringValue,
+        yuansferWeChatPayQRCodeURL: paramsMap.yuansfer_wechat_qrcode_url.stringValue,
         yuansferAlipayQRCodeURL: paramsMap.yuansfer_alipay_qrcode_url.stringValue,
         yuansferDanaQRCodeURL: paramsMap.yuansfer_dana_qrcode_url.stringValue,
         yuansferAlipayHKQRCodeURL: paramsMap.yuansfer_alipayhk_qrcode_url.stringValue,

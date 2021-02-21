@@ -53,7 +53,7 @@ function beforePaymentAuthorization(params) {
     var responsePayload;
     var checkoutHelper = require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper');
     try {
-        var basket = BasketMgr.currentOrNewBasket;
+        var basket = BasketMgr.getCurrentBasket();
         if (basket) {
             var yuansferPaymentInstrument = checkoutHelper.getYuansferPaymentInstrument(basket);
 
@@ -82,7 +82,7 @@ function beforePaymentAuthorization(params) {
                 responsePayload = checkoutHelper.createSecurePay(params);
                 if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_WECHATPAY') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferWeChatQRCodeURL = responsePayload.result;
+                        basket.custom.yuansferWeChatPayQRCodeURL = "https://yuansfer1.oss-accelerate.aliyuncs.com/images/securepayQrcode/qrcode_200043_104330309613935997.jpg";
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_ALIPAY') {
