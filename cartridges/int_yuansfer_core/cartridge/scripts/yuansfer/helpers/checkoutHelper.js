@@ -224,10 +224,6 @@ exports.createYuansferPaymentInstrument = function (lineItemCtnr, paymentMethodI
 };
 
 exports.createSecurePay = function (params) {
-
-    const reference =  yuansferHelper.getYuansferToken()+params.reference;
-    params.reference = reference;
-
     const yuansferService = require('*/cartridge/scripts/yuansfer/services/yuansferService');
 
     const securePay = yuansferService.securePay.create(params);
@@ -377,7 +373,7 @@ exports.refundCharge = function (order) {
     var yuansferToken = yuansferHelper.getYuansferToken();
     var params = {
         merchantNo:yuansferMerchantNo,
-        storeNo: yuansferToken
+        storeNo: yuansferStoreNo
     };
     var verifySign;
     if(yuansferTransactionNo){

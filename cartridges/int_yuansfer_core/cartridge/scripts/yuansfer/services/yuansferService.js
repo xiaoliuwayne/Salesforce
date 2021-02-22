@@ -130,10 +130,9 @@ function getYuansferServiceDefinition() {
             const Site = require('dw/system/Site');
 
             svc.addHeader('Content-Type','application/x-www-form-urlencoded;charset=UTF-8');
+        
+            var URL = "https://mapi.yuansfer.yunkeguan.com";
             
-            svc.addHeader('User-Agent', 'Yuansfer-SFCC-LINK/19.6.0');
-
-            var URL = "https://mapi.yuansfer.com/online/v3";
             URL += requestObject.endpoint;
 
             svc.setURL(URL);
@@ -147,7 +146,8 @@ function getYuansferServiceDefinition() {
             }
 
             if (requestObject.payload) {
-                return payloadToBody(requestObject.payload);
+                var bodyParam = payloadToBody(requestObject.payload);
+                return bodyParam;
             }
             return null;
         },
@@ -228,7 +228,7 @@ function callService(requestObject) {
 exports.securePay = {
     create: function (params) {
         var requestObject = {
-            endpoint: '/secure-pay',
+            endpoint: '/online/v3/secure-pay',
             httpMethod: 'POST',
             payload: params
         };
@@ -240,7 +240,7 @@ exports.securePay = {
 exports.refunds = {
     create: function (params) {
         var requestObject = {
-            endpoint: '/cancel',
+            endpoint: '/app-data-search/v3/cancel',
             httpMethod: 'POST',
             payload: params
         };

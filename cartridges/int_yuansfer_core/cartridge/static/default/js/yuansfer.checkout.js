@@ -153,7 +153,7 @@ function calculateVerifySign(contents,token) {
   function getSecurePayPayload(vendor) {
     var merchantNo = document.getElementById('yuansfer_merchant_no').value;
     var storeNo = document.getElementById('yuansfer_store_no').value;
-    var env = document.getElementById('yuansfer_env').value;
+    // var env = document.getElementById('yuansfer_env').value;
     var token = document.getElementById('yuansfer_token').value;
     var yuansferOrderNumberInput = document.getElementById('yuansfer_order_number').value;
     var yuansferCallbackURLInput = document.getElementById('yuansfer_callback_url');
@@ -167,20 +167,23 @@ function calculateVerifySign(contents,token) {
     var amountToPay = parseFloat(yuansferOrderAmountInput.value);
     var currencyCode = yuansferOrderCurrencyInput.value;
     // var settleCurrencyCode = yuansferOrderSettleCurrencyInput.value;
-    var returnURL = yuansferReturnURLInput.value;
+    var returnURL = yuansferCallbackURLInput.value;
     var terminal = "ONLINE";
-    yuansferCallbackURLInput = yuansferCallbackURLInput + "?transactionNo={transactionNo}&amount={amount}&status={status}&reference={reference}"
+    var reference = token + yuansferOrderNumberInput;
+    yuansferCallbackURLInput = returnURL + "?transactionNo={transactionNo}&amount={amount}&status={status}&reference={reference}"
     var param = {
         merchantNo: merchantNo,
         storeNo: storeNo,
-        env: env,
-        amount: amountToPay,                       
+        // env: env,
+        amount: 0.01,  
+        // amount: amountToPay,                       
         currency: currencyCode,    
-        settleCurrency:currencyCode,    
-        vendor: vendor,                             
-        callbackUrl: yuansferCallbackURLInput+,      
+        settleCurrency: currencyCode,    
+        vendor: vendor,           
+        ipnUrl:returnURL,               
+        callbackUrl: returnURL,      
         terminal: terminal,            
-        reference: yuansferOrderNumberInput,          
+        reference: reference,          
         description: yuansferOrderDescriptionInput,      
         note: yuansferOrderNoteInput,                                 
         goodsInfo: yuansferOrderGoodsInput
@@ -214,14 +217,14 @@ document.querySelector('button.submit-payment').addEventListener('click', functi
         type: 'POST',
         dataType:"json",
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'params':currentParams
         },
         data: {
-            'csrf_token':token,
-            'params':currentParams
+            'csrf_token':token
         }
     }).done(function (json) {
-        handleServerResponse(json);
+        
     }).fail(function (msg) {
         if (msg.responseJSON.redirectUrl) {
             window.location.href = msg.responseJSON.redirectUrl;
@@ -295,7 +298,7 @@ function getGlobalParams() {
 
             alert('Unknown payment method');
     }
-    return params;
+    return JSON.stringify(params);
 }
 
 function init() {

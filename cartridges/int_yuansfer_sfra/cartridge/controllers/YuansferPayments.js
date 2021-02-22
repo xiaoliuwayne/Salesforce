@@ -11,21 +11,7 @@ var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
  */
 server.post('BeforePaymentAuthorization',server.middleware.https, csrfProtection.validateAjaxRequest, function (req, res, next) {
     
-    var test= req.querystring;
-    var params = {
-        amount : '1.00',
-        storeNo : '300014',
-        currency : 'USD',
-        merchantNo : '200043',
-        callbackUrl : 'https://wx.yuansfer.yunkeguan.com/wx',
-        terminal : 'ONLINE',
-        ipnUrl : 'https://wx.yuansfer.yunkeguan.com/wx',
-        reference : 'seq_1525922323',
-        vendor : 'alipay',
-        goodsInfo : '[{"goods_name":"Yuansfer","quantity":"1"}]',
-        timeout : '120',
-        verifySign:"b6bfd66531ae7c9499115c7480a2c8aa"
-    }
+    var params = JSON.parse( req.httpHeaders.params);
     var responsePayload = yuansferPaymentsHelper.BeforePaymentAuthorization(params);
     res.json(responsePayload);
     next();
@@ -36,13 +22,18 @@ server.post('BeforePaymentAuthorization',server.middleware.https, csrfProtection
  */
 
 server.get('ConfirmPayment', function (req, res, next) {
+    const payload = req.httpHeaders["x-is-query_string"];
     const confirmPaymentHelper = require('*/cartridge/scripts/yuansfer/helpers/confirmPaymentHelper');
-    var success = confirmPaymentHelper.processIncomingNotification();
+    var success = confirmPaymentHelper.processIncomingNotification(payload);
 
     res.setStatusCode(success ? 200 : 500);
     res.json({
         success: !!success
     });
+    // if(success){
+    //     var URLUtils = require('dw/web/URLUtils');
+    //     res.redirect(URLUtils.url('Home-Show'));
+    // }
     next();
 });
 

@@ -82,32 +82,32 @@ function beforePaymentAuthorization(params) {
                 responsePayload = checkoutHelper.createSecurePay(params);
                 if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_WECHATPAY') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferWeChatPayQRCodeURL = "https://yuansfer1.oss-accelerate.aliyuncs.com/images/securepayQrcode/qrcode_200043_104330309613935997.jpg";
+                        basket.custom.yuansferWeChatPayQRCodeURL = responsePayload.result.qrcodeUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_ALIPAY') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferAlipayQRCodeURL = responsePayload.result;
+                        basket.custom.yuansferAlipayQRCodeURL = responsePayload.result.qrcodeUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 }else if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_KAKAOPAY') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferKakaoPayQRCodeURL = responsePayload.result;
+                        basket.custom.yuansferKakaoPayQRCodeURL = responsePayload.result.qrcodeUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 }else if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_ALIPAYHK') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferAlipayHKQRCodeURL = responsePayload.result;
+                        basket.custom.yuansferAlipayHKQRCodeURL = responsePayload.result.qrcodeUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 }else if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_GCASH') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferGCashQRCodeURL = responsePayload.result;
+                        basket.custom.yuansferGCashQRCodeURL = responsePayload.result.qrcodeUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 }else if(yuansferPaymentInstrument.paymentMethod === 'YUANSFER_DANA') {
                     Transaction.wrap(function () {
-                        basket.custom.yuansferDanaQRCodeURL = responsePayload.result;
+                        basket.custom.yuansferDanaQRCodeURL = responsePayload.result.qrcodeUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 }
