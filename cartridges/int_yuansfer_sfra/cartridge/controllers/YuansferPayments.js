@@ -6,6 +6,7 @@ var server = require('server');
 
 var yuansferPaymentsHelper = require('*/cartridge/scripts/yuansfer/helpers/controllers/yuansferPaymentsHelper');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
+const URLUtils = require('dw/web/URLUtils');
 /**
  * Entry point for handling payment intent creation and confirmation AJAX calls.
  */
@@ -15,25 +16,26 @@ server.post('BeforePaymentAuthorization',server.middleware.https, csrfProtection
     var responsePayload = yuansferPaymentsHelper.BeforePaymentAuthorization(params);
     res.json(responsePayload);
     next();
+    
 });
 
 /**
- * An callback entry point to handle returns from payment.
+ * Entry point for handling transaction search.
  */
+server.post('HandleConfirm',function (req, res, next) {
+    var bodyParams = req.httpParameterMap.requestBodyAsString;
+    var params = yuansferPaymentsHelper.DecodeFormParams(bodyParams);
+    var responsePayload = yuansferPaymentsHelper.SearchTransaction(params);
+    if(responsePayload.ret_code == "000100"){
+        if(responsePayload.result.status == "success"){
+            var placeOrderParams = params;
+            placeOrderParams['transactionNo'] = responsePayload.result.transactionNo;
+            const confirmPaymentHelper = require('*/cartridge/scripts/yuansfer/helpers/confirmPaymentHelper');
+            var success = confirmPaymentHelper.processIncomingNotification(placeOrderParams);
+        }
+    }
+    res.json(responsePayload);
 
-server.get('ConfirmPayment', function (req, res, next) {
-    const payload = req.httpHeaders["x-is-query_string"];
-    const confirmPaymentHelper = require('*/cartridge/scripts/yuansfer/helpers/confirmPaymentHelper');
-    var success = confirmPaymentHelper.processIncomingNotification(payload);
-
-    res.setStatusCode(success ? 200 : 500);
-    res.json({
-        success: !!success
-    });
-    // if(success){
-    //     var URLUtils = require('dw/web/URLUtils');
-    //     res.redirect(URLUtils.url('Home-Show'));
-    // }
     next();
 });
 

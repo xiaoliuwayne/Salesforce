@@ -1,0 +1,20 @@
+.payment-elements {
+    &-input {
+        padding-top: 0.5625rem;
+    }
+
+    &-select {
+        padding: 0;
+    }
+}
+
+#wechat-qrcode-wrapper {
+    margin: 20px 0 60px;
+    text-align: center;
+
+    #qrcode {
+        width: min-content;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+}

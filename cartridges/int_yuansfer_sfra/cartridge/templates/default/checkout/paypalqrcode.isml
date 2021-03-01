@@ -1,0 +1,38 @@
+<isset name="yuansferCheckoutHelper" value="${require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper')}" scope="page" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/qrcode.js');
+</isscript>
+
+<isset name="yuansferPaypalQRCodeURL" value="${yuansferCheckoutHelper.getPaypalQRCodeURL(pdict.order.orderNumber)}" scope="page" />
+
+<div id="paypal-qrcode-wrapper">
+
+    <h1>${Resource.msg('paypal.completeyourorder', 'yuansfer', null)}</h1>
+
+    <p>${Resource.msg('paypal.scanqrcode', 'yuansfer', null)} ${pdict.order.totals.grandTotal}</p>
+    <div id="paypalQRCode"></div>
+
+    <p>${Resource.msg('paypal.qrcodealternative', 'yuansfer', null)}:</p>
+	  <a href="${yuansferPaypalQRCodeURL}" target="_blank">${yuansferPaypalQRCodeURL}</a>
+    
+</div>
+
+<script type="text/javascript">
+
+	var ready = (callback) => {
+	  if (document.readyState != "loading") callback();
+	  else document.addEventListener("DOMContentLoaded", callback);
+	}
+	
+  ready(() => { 
+        new QRCode(document.getElementById("paypalQRCode"),
+         {
+           text: "${yuansferPaypalQRCodeURL}",
+           width: 100,
+           height: 100
+         });
+	});
+
+</script>

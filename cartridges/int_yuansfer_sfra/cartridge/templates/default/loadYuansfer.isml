@@ -1,8 +1,6 @@
 <isset name="yuansferHelper" value="${require('*/cartridge/scripts/yuansfer/helpers/yuansferHelper')}" scope="page" />
 <isset name="yuansferEnabled" value="${yuansferHelper.isYuansferEnabled()}" scope="page" />
-<isset name="yuansferScriptURL" value="${yuansferHelper.getYuansferScriptUrl()}" scope="page" />
 <isset name="yuansferMerchantNo" value="${yuansferHelper.getYuansferMerchantNo()}" scope="page" />
-<isset name="yuansferEnv" value="${yuansferHelper.getYuansferEnv()}" scope="page" />
 <isset name="yuansferStoreNo" value="${yuansferHelper.getYuansferStoreNo()}" scope="page" />
 <isset name="yuansferToken" value="${yuansferHelper.getYuansferToken()}" scope="page" />
 <isset name="yuansferCheckoutHelper" value="${require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper')}" scope="page" />
@@ -10,9 +8,7 @@
 <isif condition="${yuansferEnabled}">
 	<isif condition="${yuansferMerchantNo}">
 		<input type="hidden" id="yuansfer_merchant_no" value="${yuansferMerchantNo}" />
-		<input type="hidden" id="yuansfer_env" value="${yuansferEnv}" />
 		<input type="hidden" id="yuansfer_store_no" value="${yuansferStoreNo}" />
 		<input type="hidden" id="yuansfer_token" value="${yuansferToken}" />
-		<input type="hidden" id="yuansfer_script_url" value="${yuansferScriptURL}" />
 	</isif>
 </isif>

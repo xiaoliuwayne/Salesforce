@@ -1,13 +1,14 @@
+
 <div class="tab-pane ${paymentOption.ID}-content" id="${paymentOption.ID}-content" role="tabpanel">
     <fieldset class="payment-form-fields">
     
     	<input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-            value="${paymentOption.ID}" name=>
-        <input type="hidden" name="yuansfer_alipay_qrcode_url" id="yuansfer_alipay_qrcode_url">
+            value="${paymentOption.ID}">
+        <input type="hidden" name="yuansfer_paypal_qrcode_url" id="yuansfer_paypal_qrcode_url">
 
 		<div class="row">
             <div class="col-12">
-            	<p>${Resource.msg('alipay.qrcodemessage', 'yuansfer',null)}</p>
+            	<p>${Resource.msg('paypal.qrcodemessage', 'yuansfer',null)}</p>
             </div>
         </div>
     </fieldset>

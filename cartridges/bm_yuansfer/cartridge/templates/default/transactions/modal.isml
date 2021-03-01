@@ -1,0 +1,45 @@
+<style>
+	@import url("${URLUtils.staticURL('/css/core/modal.css')}");
+</style>
+
+<!-- Refund window -->
+<div id="refund_modal" class="yuansferModal">
+	<div class="modal-content">
+		<span class="close">&times;</span>
+		<div>
+			<h1>${Resource.msg('yuansfer.transaction.refund', 'yuansfer', null)}</h1>
+			<hr>
+			<div class="alert alert-danger alert-dismissible yuansferErrorMessage" role="alert">
+				<div class="msg">${Resource.msg('yuansfer.transaction.fail', 'yuansfer', null)}</div>
+				<button type="button" class="close" data-dismiss="alert" aria-label="${Resource.msg('yuansfer.modal.close', 'yuansfer', null)}">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div>
+				<p><span class="label">${Resource.msg('yuansfer.order.number', 'yuansfer', null)}:</span><span id="refund_order_no"></span></p>
+				<p><span class="label">${Resource.msg('yuansfer.transaction.no', 'yuansfer', null)}:</span><span id="refund_transaction_id"></span></p>
+				<p><span class="label">${Resource.msg('yuansfer.payment.id', 'yuansfer', null)}:</span><span id="refund_payment_id"></span></p>
+				<p><span class="label">${Resource.msg('yuansfer.full.amount', 'yuansfer', null)}:</span><span id="refund_full_amount"></span></p>
+				<p><span class="label">${Resource.msg('yuansfer.refundable.amount', 'yuansfer', null)}:</span><span id="refund_refundable_amount"></span></p>
+			</div>
+			<div class="input-row">
+				<p>
+					<input type="text" id="refund_value" name="refund_value">
+					<span id="refund_currency"></span>
+				</p>
+			</div>
+			<div>
+				<button class="btn btn-primary submit" type="button">
+					${Resource.msg('yuansfer.form.submit', 'yuansfer', null)}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Transaction action controller URL -->
+<input type="hidden" id="actionControllerUrl" value="${URLUtils.url('YuansferBM-RemoteCall')}">
+
+<!-- Scripts-->
+<script src="${URLUtils.staticURL('/js/core/actions.js')}"></script>
+<script src="${URLUtils.staticURL('/js/core/md5.js')}"></script>

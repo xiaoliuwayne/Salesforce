@@ -1,0 +1,38 @@
+<isset name="yuansferCheckoutHelper" value="${require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper')}" scope="page" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/qrcode.js');
+</isscript>
+
+<isset name="yuansferCreditCardQRCodeURL" value="${yuansferCheckoutHelper.getCreditCardQRCodeURL(pdict.order.orderNumber)}" scope="page" />
+
+<div id="creditcard-qrcode-wrapper">
+
+    <h1>${Resource.msg('creditcard.completeyourorder', 'yuansfer', null)}</h1>
+
+    <p>${Resource.msg('creditcard.scanqrcode', 'yuansfer', null)} ${pdict.order.totals.grandTotal}</p>
+    <div id="creditcardQRCode"></div>
+
+    <p>${Resource.msg('creditcard.qrcodealternative', 'yuansfer', null)}:</p>
+	  <a href="${yuansferCreditCardQRCodeURL}" target="_blank">${yuansferCreditCardQRCodeURL}</a>
+    
+</div>
+
+<script type="text/javascript">
+
+	var ready = (callback) => {
+	  if (document.readyState != "loading") callback();
+	  else document.addEventListener("DOMContentLoaded", callback);
+	}
+	
+  ready(() => { 
+        new QRCode(document.getElementById("creditcardQRCode"),
+         {
+           text: "${yuansferCreditCardQRCodeURL}",
+           width: 100,
+           height: 100
+         });
+	});
+
+</script>

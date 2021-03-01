@@ -1,0 +1,34 @@
+<isset name="yuansferCheckoutHelper" value="${require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper')}" scope="page" />
+
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/qrcode.js');
+</isscript>
+
+<isset name="yuansferDanaQRCodeURL" value="${yuansferCheckoutHelper.getDanaQRCodeURL(pdict.order.orderNumber)}" scope="page" />
+
+<div id="dana-qrcode-wrapper">
+
+    <h1>${Resource.msg('dana.completeyourorder', 'yuansfer', null)}</h1>
+
+    <p>${Resource.msg('dana.scanqrcode', 'yuansfer', null)} ${pdict.order.totals.grandTotal}</p>
+    <div id="danaQRCode"></div>
+    
+</div>
+
+<script type="text/javascript">
+
+	var ready = (callback) => {
+	  if (document.readyState != "loading") callback();
+	  else document.addEventListener("DOMContentLoaded", callback);
+	}
+	
+    ready(() => { 
+        var elem = document.createElement("img");
+        elem.setAttribute("height", "100");
+        elem.setAttribute("width", "100");
+        elem.src= "${yuansferDanaQRCodeURL}";
+	    document.getElementById("danaQRCode").appendChild(elem);
+	});
+
+</script>

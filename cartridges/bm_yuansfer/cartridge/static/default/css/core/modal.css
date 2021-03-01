@@ -1,0 +1,23 @@
+.yuansferModal h1 {
+    font-size: 1.4em;
+}
+
+.yuansferModal .label {
+    color: black;
+    padding-left: 0em;
+    font-size: 0.8em;
+}
+
+.yuansferModal .input-row {
+    margin-top: 1.4em;
+    margin-bottom: 1.9em;
+}
+
+.yuansferErrorMessage, .yuansferInvalidAmount {
+    margin-top: 1.4em;
+    display: none;
+}
+
+.yuansferErrorMessage .msg, .yuansferInvalidAmount .msg {
+    display: inline;
+}

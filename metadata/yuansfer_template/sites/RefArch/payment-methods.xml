@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+
+    <payment-method method-id="CREDIT_CARD">
+        <name xml:lang="x-default">Credit Card</name>
+        <name xml:lang="zh-CN">信用卡</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>YUANSFER_CREDIT</processor-id>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_WECHATPAY">
+        <name xml:lang="x-default">WeChat Pay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>CNY</currency>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_ALIPAY">
+        <name xml:lang="x-default">Alipay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>GBP</currency>
+            <currency>HKD</currency>
+            <currency>CNY</currency>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_KAKAOPAY">
+        <name xml:lang="x-default">Kakao Pay</name>
+        <enabled-flag>false</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>KRW</currency>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_GCASH">
+        <name xml:lang="x-default">GCash</name>
+        <enabled-flag>false</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>PHP</currency>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_DANA">
+        <name xml:lang="x-default">Dana</name>
+        <enabled-flag>false</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>IDR</currency>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_ALIPAYHK">
+        <name xml:lang="x-default">Alipay HK</name>
+        <enabled-flag>false</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>HKD</currency>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_CREDITCARD">
+        <name xml:lang="x-default">Yuansfer Credit Card</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+    <payment-method method-id="YUANSFER_PAYPAL">
+        <name xml:lang="x-default">Paypal</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>YUANSFER_APM</processor-id>
+        <currencies>
+            <currency>USD</currency>
+        </currencies>
+    </payment-method>
+
+</payment-settings>

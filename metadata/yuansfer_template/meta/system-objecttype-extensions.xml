@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="OrderPaymentInstrument">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="yuansferCardID">
+                <display-name xml:lang="x-default">Yuansfer Card ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferChargeID">
+                <display-name xml:lang="x-default">Yuansfer Charge ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferCustomerID">
+                <display-name xml:lang="x-default">Yuansfer Customer ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferDefaultCard">
+                <display-name xml:lang="x-default">Yuansfer Default Card</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferSavePaymentInstrument">
+                <display-name xml:lang="x-default">Save Payment Instrument</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferWeChatPayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer WeChat QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferAlipayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Alipay QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferKakaoPayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer KakaoPay QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferGCashQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer GCash QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferAlipayHKQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Alipay HK QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferDanaQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Dana QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferCreditCardQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Credit Card QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferPaypalQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Paypal QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferSavePaymentForReAuthorise">
+                <display-name xml:lang="x-default">Save Payment Instrument for re-authorise payments post 7 days on Yuansfer</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+    </type-extension>
+
+    <type-extension type-id="Profile">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="yuansferCustomerID">
+                <display-name xml:lang="x-default">Yuansfer Customer ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Yuansfer">
+                <display-name xml:lang="x-default">Yuansfer</display-name>
+                <attribute attribute-id="yuansferCustomerID"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="yuansferEnable">
+                <display-name xml:lang="x-default">Enable Yuansfer</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferMerchantNo">
+                <display-name xml:lang="x-default">Yuansfer MerchantNo</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferStoreNo">
+                <display-name xml:lang="x-default">Yuansfer StoreNo</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferToken">
+                <display-name xml:lang="x-default">Yuansfer Token</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Yuansfer Configs">
+                <display-name xml:lang="x-default">Yuansfer Configurations</display-name>
+                <attribute attribute-id="yuansferEnable"/>
+                <attribute attribute-id="yuansferToken"/>
+                <attribute attribute-id="yuansferMerchantNo"/>
+                <attribute attribute-id="yuansferStoreNo"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="PaymentTransaction">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="yuansferTransaction">
+                <display-name xml:lang="x-default">Yuansfer Transaction Number</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferOrderNumber">
+                <display-name xml:lang="x-default">Yuansfer Order Number</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferTransactionOpened">
+                <display-name xml:lang="x-default">Transaction Opened</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>true</default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+    </type-extension>
+
+    <type-extension type-id="Basket">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="yuansferTransactionNo">
+                <display-name xml:lang="x-default">Yuansfer TransactionNo</display-name>
+                <description xml:lang="x-default">Yuansfer TransactionNo</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferIsPaymentInReview">
+                <display-name xml:lang="x-default">Yuansfer payment in review</display-name>
+                <description xml:lang="x-default">Yuansfer payment in review</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferWeChatPayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer WeChat QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer WeChat QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferAlipayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Alipay QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer Alipay QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferDanaQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Dana QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer Dana QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferKakaoPayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer KakaoPay QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer KakaoPay QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferAlipayHKQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer AlipayHK QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer AlipayHK QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferGCashQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer GCash QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer GCash QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferCreditCardQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Credit Card QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer Credit Card QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferPaypalQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Paypal QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+    </type-extension>
+
+    <type-extension type-id="Order">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="yuansferIsPaymentInReview">
+                <display-name xml:lang="x-default">Yuansfer payment in review</display-name>
+                <description xml:lang="x-default">Yuansfer payment in review</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferTransactionNo">
+                <display-name xml:lang="x-default">Yuansfer TransactionNo</display-name>
+                <description xml:lang="x-default">Yuansfer TransactionNo</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferWeChatPayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer WeChat QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer WeChat QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferAlipayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Alipay QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer Alipay QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferDanaQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Dana QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer Dana QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferKakaoPayQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer KakaoPay QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer KakaoPay QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferAlipayHKQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer AlipayHK QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer AlipayHK QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+             <attribute-definition attribute-id="yuansferGCashQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer GCash QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer GCash QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferCreditCardQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Credit Card QR Code URL</display-name>
+                <description xml:lang="x-default">Yuansfer Credit Card QR Code URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="yuansferPaypalQRCodeURL">
+                <display-name xml:lang="x-default">Yuansfer Paypal QR Code URL</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Yuansfer Payment">
+                <display-name xml:lang="x-default">Yuansfer Payment</display-name>
+                <attribute attribute-id="yuansferIsPaymentInReview"/>
+                <attribute attribute-id="yuansferTransactionNo"/>
+                <attribute attribute-id="yuansferWeChatPayQRCodeURL"/>
+                <attribute attribute-id="yuansferAlipayQRCodeURL"/>
+                <attribute attribute-id="yuansferDanaQRCodeURL"/>
+                <attribute attribute-id="yuansferKakaoPayQRCodeURL"/>
+                <attribute attribute-id="yuansferGCashQRCodeURL"/>
+                <attribute attribute-id="yuansferAlipayHKQRCodeURL"/>
+                <attribute attribute-id="yuansferCreditCardQRCodeURL"/>
+                <attribute attribute-id="yuansferPaypalQRCodeURL"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+</metadata>

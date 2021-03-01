@@ -1,0 +1,103 @@
+<isdecorate template="common/layout/page">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addCss('/css/checkout/checkout.css');
+        assets.addJs('/js/md5.js');
+        assets.addJs('/js/checkoutRegistration.js');
+        assets.addJs('/js/yuansfer.confirm.js');
+    </isscript>
+    <isset name="isConfirmation" value="${true}" scope="page" />
+    <isif condition="${pdict.reportingURLs && pdict.reportingURLs.length}">
+        <isinclude template="reporting/reportingUrls" />
+    </isif>
+
+    <input type="hidden" id="yuansfer_handle_confirm_url" value="${URLUtils.https('YuansferPayments-HandleConfirm')}" />
+    <input type="hidden" id="yuansfer_order_number" value="${pdict.order.orderNumber}" />
+    <input type="hidden" id="yuansfer_home_show" value="${URLUtils.https('Home-Show')}" />
+
+    <div class="hero slant-down hero-confirmation">
+        <h1 class="page-title">${Resource.msg('title.thank.you.page','confirmation',null)}</h1>
+    </div>
+    <div class="container receipt <isif condition="${pdict.order.shipping.length > 1}">multi-ship</isif>">
+        <div class="row">
+            <div class="${pdict.returningCustomer ? 'col-sm-6 offset-sm-3' : 'col-sm-6 offset-sm-3 offset-md-0'}">
+                <isset name="isWeChatPay" value="${false}" scope="page" />
+                <isset name="isAlipay" value="${false}" scope="page" />
+                <isset name="isDana" value="${false}" scope="page" />
+                <isset name="isAlipayHK" value="${false}" scope="page" />
+                <isset name="isGCash" value="${false}" scope="page" />
+                <isset name="isKakaoPay" value="${false}" scope="page" />
+                <isset name="isCreditCard" value="${false}" scope="page" />
+                <isset name="isPaypal" value="${false}" scope="page" />
+                <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment">
+			        <isif condition="${payment.paymentMethod === 'YUANSFER_WECHATPAY'}">
+			            <isset name="isWeChatPay" value="${true}" scope="page" />
+			            <isbreak/>
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_ALIPAY'}"/>
+                            <isset name="isAlipay" value="${true}" scope="page" />
+                            <isbreak/> 
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_DANA'}"/>
+                            <isset name="isDana" value="${true}" scope="page" />
+                            <isbreak/>    
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_GCASH'}"/>
+                            <isset name="isGCash" value="${true}" scope="page" />
+                            <isbreak/>    
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_ALIPAYHK'}"/>
+                            <isset name="isAlipayHK" value="${true}" scope="page" />
+                            <isbreak/>    
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_KAKAOPAY'}"/>
+                            <isset name="isKakaoPay" value="${true}" scope="page" />
+                            <isbreak/>    
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_CREDITCARD'}"/>
+                            <isset name="isCreditCard" value="${true}" scope="page" />
+                            <isbreak/>  
+                        <iselseif condition="${payment.paymentMethod === 'YUANSFER_PAYPAL'}"/>
+                            <isset name="isPaypal" value="${true}" scope="page" />
+                            <isbreak/> 
+			        </isif>
+			    </isloop>
+                
+                <isif condition="${isWeChatPay}">
+                	<isinclude template="checkout/wechatpayqrcode" />
+                <iselseif condition="${isAlipay}"/>
+                	<isinclude template="checkout/alipayqrcode" />
+                <iselseif condition="${isAlipayHK}"/>
+                	<isinclude template="checkout/alipayhkqrcode" />
+                <iselseif condition="${isDana}"/>
+                	<isinclude template="checkout/danaqrcode" />
+                <iselseif condition="${isKakaoPay}"/>
+                	<isinclude template="checkout/kakaopayqrcode" />
+                <iselseif condition="${isGCash}"/>
+                	<isinclude template="checkout/gcashqrcode" />
+                <iselseif condition="${isCreditCard}"/>
+                	<isinclude template="checkout/creditcardqrcode" />
+                <iselseif condition="${isPaypal}"/>
+                	<isinclude template="checkout/paypalqrcode" />
+                <iselse/>
+                    <isif condition="${pdict.order.orderStatus == dw.order.Order.ORDER_STATUS_CREATED}">
+	                    <h2>${Resource.msg('yuansfer.confirmation.thankyou','yuansfer',null)}</h2>
+	                    <p class="order-thank-you-email-msg">${Resource.msg('yuansfer.confirmation.shippingnote', 'yuansfer', null)}</p>
+	                <iselse/>
+	                    <h2 class="order-thank-you-msg">${Resource.msg('msg.placed.order.thank.you','confirmation',null)}</h2>
+	                    <p class="order-thank-you-email-msg"><isprint value="${Resource.msgf('info.receive.email.confirmation', 'confirmation', null, pdict.order.orderEmail)}" encoding="htmlcontent" /></p>
+	                </isif>
+                </isif>
+            </div>
+        </div>
+        <div class="row">
+            <isif condition="${pdict.returningCustomer === false}">
+                <div class="col-sm-6 offset-sm-3 offset-md-0 push-md-6">
+                    <isinclude template="checkout/confirmation/confirmationCreateAccount" />
+                </div>
+            </isif>
+            <div class="${pdict.returningCustomer ? 'col-sm-6 offset-sm-3' : 'col-sm-6 offset-sm-3 offset-md-0 pull-md-6' }">
+                <isinclude template="checkout/confirmation/confirmationDetails" />
+                <div class="mb-3">
+	                <a href="${URLUtils.url('Home-Show')}" class="btn btn-primary btn-block order-confirmation-continue-shopping" role="button" aria-pressed="true">
+	                    ${Resource.msg('button.continue.shopping','confirmation',null)}
+	                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</isdecorate>

@@ -1,0 +1,102 @@
+<isset name="yuansferHelper" value="${require('~/cartridge/scripts/helpers/yuansferHelper')}" scope="page" />
+<isset name="yuansferEnabled" value="${yuansferHelper.isYuansferEnabled()}" scope="page" />
+<isset name="yuansferMerchantNo" value="${yuansferHelper.getYuansferMerchantNo()}" scope="page" />
+<isset name="yuansferStoreNo" value="${yuansferHelper.getYuansferStoreNo()}" scope="page" />
+<isset name="yuansferToken" value="${yuansferHelper.getYuansferToken()}" scope="page" />
+
+<style>
+	@import url("https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.5.1/css/tabulator.min.css");
+	@import url("https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.5.1/css/semantic-ui/tabulator_semantic-ui.min.css");
+	@import url("${URLUtils.staticURL('/css/core/global.css')}");
+	@import url("${URLUtils.staticURL('/css/core/list.css')}");
+	@import url("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css");
+</style>
+<isscript>
+var translationStrings = JSON.stringify({ transactionMissing: dw.web.Resource.msg('yuansfer.transaction.missing', 'yuansfer', null), 
+noResults: dw.web.Resource.msg('yuansfer.no.results', 'yuansfer', null), 
+rowId: dw.web.Resource.msg('yuansfer.row.id', 'yuansfer', null), 
+orderNo: dw.web.Resource.msg('yuansfer.row.id', 'yuansfer', null), 
+transactionId: dw.web.Resource.msg('yuansfer.row.id', 'yuansfer', null), 
+paymentId: dw.web.Resource.msg('yuansfer.payment.id', 'yuansfer', null), 
+amount: dw.web.Resource.msg('yuansfer.transaction.amount', 'yuansfer', null), 
+currency: dw.web.Resource.msg('yuansfer.transaction.currency', 'yuansfer', null), 
+date: dw.web.Resource.msg('yuansfer.transaction.date', 'yuansfer', null), 
+opened: dw.web.Resource.msg('yuansfer.transaction.opened', 'yuansfer', null), 
+processor: dw.web.Resource.msg('yuansfer.transaction.processor', 'yuansfer', null), 
+actions: dw.web.Resource.msg('yuansfer.transaction.actions', 'yuansfer', null), 
+capture: dw.web.Resource.msg('yuansfer.label.capture', 'yuansfer', null), 
+void: dw.web.Resource.msg('yuansfer.label.void', 'yuansfer', null), 
+refund: dw.web.Resource.msg('yuansfer.label.refund', 'yuansfer', null), 
+first: dw.web.Resource.msg('yuansfer.pagination.first', 'yuansfer', null), 
+firstTitle: dw.web.Resource.msg('yuansfer.pagination.firsttitle', 'yuansfer', null), 
+last: dw.web.Resource.msg('yuansfer.pagination.last', 'yuansfer', null), 
+lastTitle: dw.web.Resource.msg('yuansfer.pagination.lasttitle', 'yuansfer', null), 
+prev: dw.web.Resource.msg('yuansfer.pagination.prev', 'yuansfer', null), 
+prevTitle: dw.web.Resource.msg('yuansfer.pagination.prevtitle', 'yuansfer', null), 
+next: dw.web.Resource.msg('yuansfer.pagination.next', 'yuansfer', null), 
+nextTitle: dw.web.Resource.msg('yuansfer.pagination.nexttitle', 'yuansfer', null) });
+
+</isscript>
+<isdecorate template="application/MenuFrame">
+	<div id="loading">
+		<div id="loading_image">
+			${Resource.msg('yuansfer.loader', 'yuansfer', null)}
+		</div>
+	</div>
+	<!-- Encoding -->
+	<iscontent type="text/html" charset="UTF-8">
+	
+	<!-- Modules -->
+	<isinclude template="inc/Modules">
+	
+	<!-- Breadcrumbs -->
+	<isbreadcrumb name1="${Resource.msg('yuansfer.yuansfercom.label', 'yuansfer', null)}" url1="${URLUtils.url('SiteNavigationBar-ShowMenuitemOverview', 'CurrentMenuItemId', 'yuansfer_site')}" name2="${Resource.msg('yuansfer.manage.transactions', 'yuansfer', null)}" url2="${URLUtils.url('YuansferBM-ListTransactions')}">
+	
+	<!-- Tab navigation table -->	
+    <isinclude template="inc/tabs">
+	
+	<div class="alert alert-warning alert-dismissible yuansferSuccessMessage" role="alert">
+		<span>${Resource.msg('yuansfer.transaction.success', 'yuansfer', null)}</span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="${Resource.msg('yuansfer.modal.close', 'yuansfer', null)}">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<!-- Main content table -->	
+	<div class="transactions-table-controls">
+		${Resource.msg('yuansfer.pager.rows', 'yuansfer', null)}: 
+		<select class="transactions-table-pager" name="transactions-table-pager">
+			<option value="10">${Resource.msg('yuansfer.number.10', 'yuansfer', null)}</option>
+			<option value="50" selected>${Resource.msg('yuansfer.number.50', 'yuansfer', null)}</option>
+			<option value="100">${Resource.msg('yuansfer.number.100', 'yuansfer', null)}</option>
+			<option value="150">${Resource.msg('yuansfer.number.150', 'yuansfer', null)}</option>
+			<option value="200">${Resource.msg('yuansfer.number.200', 'yuansfer', null)}</option>
+			<option value="250">${Resource.msg('yuansfer.number.250', 'yuansfer', null)}</option>
+			<option value="300">${Resource.msg('yuansfer.number.300', 'yuansfer', null)}</option>
+			<option value="all">${Resource.msg('yuansfer.pager.all', 'yuansfer', null)}</option>
+		</select>
+	</div>
+	<div id="transactions-table"></div>
+
+	<!-- Transactions modal windows -->
+	<isinclude template="transactions/modal">
+
+</isdecorate>
+
+<!-- Translation strings -->
+<input type="hidden" id="translationStrings" value="${translationStrings}">
+
+<!-- Current locale -->
+<input type="hidden" id="currentLocale" value="${pdict.CurrentRequest.getLocale()}">
+
+<!-- Transaction controller URL -->
+<input type="hidden" id="transactionsControllerUrl" value="${URLUtils.url('YuansferBM-GetTransactionsData')}">
+
+<!-- Merchant Related info -->
+<input type="hidden" id="yuansfer_merchant_no" value="${yuansferMerchantNo}" />
+<input type="hidden" id="yuansfer_store_no" value="${yuansferStoreNo}" />
+<input type="hidden" id="yuansfer_token" value="${yuansferToken}" />
+
+<!-- Scripts-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.5.1/js/tabulator.min.js"></script>
+<script src="${URLUtils.staticURL('/js/core/list.js')}"></script>
