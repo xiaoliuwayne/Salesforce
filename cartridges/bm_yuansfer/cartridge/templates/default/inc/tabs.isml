@@ -3,7 +3,7 @@
     <tbody>
         <tr>
             <td nowrap="nowrap" class="e n s table_tabs_dis_background">
-                <a id="YuansferBM-ListTransactions" class="table_tabs_dis" href="${URLUtils.url('YuansferBM-ListTransactions')}">
+                <a id="YuansferRender-ListTransactions" class="table_tabs_dis" href="${URLUtils.url('YuansferRender-ListTransactions')}">
                 ${Resource.msg('yuansfer.transactions.label', 'yuansfer', null)}
                 </a>
             </td>

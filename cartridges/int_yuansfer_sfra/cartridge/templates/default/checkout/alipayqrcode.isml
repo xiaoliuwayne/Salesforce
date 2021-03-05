@@ -13,7 +13,10 @@
 
     <p>${Resource.msg('alipay.scanqrcode', 'yuansfer', null)} ${pdict.order.totals.grandTotal}</p>
     <div id="alipayQRCode"></div>
-    
+
+    <p>${Resource.msg('alipay.qrcodealternative', 'yuansfer', null)}:</p>
+	  <a href="${yuansferAlipayQRCodeURL}" target="_blank">${yuansferAlipayQRCodeURL}</a>
+
 </div>
 
 <script type="text/javascript">
@@ -22,16 +25,14 @@
 	  if (document.readyState != "loading") callback();
 	  else document.addEventListener("DOMContentLoaded", callback);
 	}
-	
-	// ready(() => { 
-	//   new QRCode(document.getElementById("alipayQRCode"), "${yuansferAlipayQRCodeURL}");
-	// });
-	ready(() => { 
-        var elem = document.createElement("img");
-        elem.setAttribute("height", "100");
-        elem.setAttribute("width", "100");
-        elem.src= "${yuansferAlipayQRCodeURL}";
-	    document.getElementById("alipayQRCode").appendChild(elem);
+
+	ready(() => {
+		  new QRCode(document.getElementById("alipayQRCode"),
+      {
+        text: "${yuansferAlipayQRCodeURL}",
+        width: 100,
+        height: 100
+      });
 	});
 
 </script>

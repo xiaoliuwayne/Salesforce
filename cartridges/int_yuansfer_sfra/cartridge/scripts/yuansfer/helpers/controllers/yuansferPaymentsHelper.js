@@ -1,18 +1,23 @@
 /* eslint-env es6 */
-/* global request, dw, empty */
+/* global */
 
 'use strict';
 
+/**
+ * Decode parameter
+ * @param {Object} params parameters
+ * @return {Object} - decoded object
+ */
 function decodeFormParams(params) {
-    var pairs = params.split('&'),
-        result = {};
+    var pairs = params.split('&');
+    var result = {};
 
     for (var i = 0; i < pairs.length; i++) {
-        var pair = pairs[i].split('='),
-            key = decodeURIComponent(pair[0]),
-            value = decodeURIComponent(pair[1]),
-            isArray = /\[\]$/.test(key),
-            dictMatch = key.match(/^(.+)\[([^\]]+)\]$/);
+        var pair = pairs[i].split('=');
+        var key = decodeURIComponent(pair[0]);
+        var value = decodeURIComponent(pair[1]);
+        var isArray = /\[\]$/.test(key);
+        var dictMatch = key.match(/^(.+)\[([^\]]+)\]$/);
 
         if (dictMatch) {
             key = dictMatch[1];
@@ -35,9 +40,9 @@ exports.DecodeFormParams = decodeFormParams;
 
 /**
  * Created a response payload for beforePaymentAuthorization based on the status
- * of a given payment intent.
+ * of a given payment params.
  *
- * @param {Object} intent - PaymentIntent object
+ * @param {Object} params - PaymentIntent object
  * @return {Object} - Response payload to return to client
  */
 function searchTransaction(params) {
@@ -54,6 +59,7 @@ exports.SearchTransaction = searchTransaction;
 
 /**
  * Entry point for handling payment creation and confirmation AJAX calls.
+ * @param {Object} params - parameter object
  * @return {Object} responsePayload.
  */
 function beforePaymentAuthorization(params) {
@@ -65,69 +71,47 @@ function beforePaymentAuthorization(params) {
         var basket = BasketMgr.getCurrentBasket();
         if (basket) {
             var yuansferPaymentInstrument = checkoutHelper.getYuansferPaymentInstrument(basket);
-
-            if (yuansferPaymentInstrument && yuansferPaymentInstrument.paymentMethod === 'CREDIT_CARD') {
-                var paymentIntent;
-                var paymentIntentId = (yuansferPaymentInstrument.paymentTransaction) ?
-                    yuansferPaymentInstrument.paymentTransaction.getTransactionID() : null;
-                if (paymentIntentId) {
-                    paymentIntent = checkoutHelper.confirmPaymentIntent(paymentIntentId);
-                } else {
-                    paymentIntent = checkoutHelper.createPaymentIntent(yuansferPaymentInstrument);
-
-                    Transaction.wrap(function () {
-                        yuansferPaymentInstrument.paymentTransaction.setTransactionID(paymentIntent.id);
-                    });
-                }
-
-                if (paymentIntent.review) {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferIsPaymentInReview = true;
-                    });
-                }
-
-                responsePayload = generateCardsPaymentResponse(paymentIntent);
-            } else if (yuansferPaymentInstrument) {
+            if (yuansferPaymentInstrument) {
                 responsePayload = checkoutHelper.createSecurePay(params);
                 let paymentMethod = yuansferPaymentInstrument.paymentMethod;
                 if (paymentMethod === 'YUANSFER_WECHATPAY') {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferWeChatPayQRCodeURL = responsePayload.result.qrcodeUrl;
+                    Transaction.wrap(function() {
+                        basket.custom.yuansferWeChatPayQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_CREDITCARD') {
                     // 跳转到yuasnfer 信用卡收银台支付
-                    Transaction.wrap(function () {
+                    Transaction.wrap(function() {
                         basket.custom.yuansferCreditCardQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_ALIPAY') {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferAlipayQRCodeURL = responsePayload.result.qrcodeUrl;
+                    Transaction.wrap(function() {
+                        basket.custom.yuansferAlipayQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_KAKAOPAY') {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferKakaoPayQRCodeURL = responsePayload.result.qrcodeUrl;
+                    Transaction.wrap(function() {
+                        basket.custom.yuansferKakaoPayQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_ALIPAYHK') {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferAlipayHKQRCodeURL = responsePayload.result.qrcodeUrl;
+                    Transaction.wrap(function() {
+                        basket.custom.yuansferAlipayHKQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_GCASH') {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferGCashQRCodeURL = responsePayload.result.qrcodeUrl;
+                    Transaction.wrap(function() {
+                        basket.custom.yuansferGCashQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_DANA') {
-                    Transaction.wrap(function () {
-                        basket.custom.yuansferDanaQRCodeURL = responsePayload.result.qrcodeUrl;
+                    Transaction.wrap(function() {
+                        basket.custom.yuansferDanaQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
                 } else if (paymentMethod === 'YUANSFER_PAYPAL') {
-                    Transaction.wrap(function () {
+                    Transaction.wrap(function() {
                         basket.custom.yuansferPaypalQRCodeURL = responsePayload.result.cashierUrl;
                         basket.custom.yuansferIsPaymentInReview = true;
                     });
@@ -139,14 +123,14 @@ function beforePaymentAuthorization(params) {
             var o = e.callResult;
             responsePayload = {
                 error: {
-                    message: o.status
-                }
+                    message: o.status,
+                },
             };
         } else {
             responsePayload = {
                 error: {
-                    message: e.message
-                }
+                    message: e.message,
+                },
             };
         }
     }
@@ -164,7 +148,6 @@ exports.BeforePaymentAuthorization.public = true;
  */
 function handleAPM(sfra) {
     const URLUtils = require('dw/web/URLUtils');
-    const paramsMap = request.httpParameterMap;
 
     var redirectUrl = '';
     try {

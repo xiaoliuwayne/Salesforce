@@ -16,7 +16,7 @@
 
     <p>${Resource.msg('paypal.qrcodealternative', 'yuansfer', null)}:</p>
 	  <a href="${yuansferPaypalQRCodeURL}" target="_blank">${yuansferPaypalQRCodeURL}</a>
-    
+
 </div>
 
 <script type="text/javascript">
@@ -25,8 +25,8 @@
 	  if (document.readyState != "loading") callback();
 	  else document.addEventListener("DOMContentLoaded", callback);
 	}
-	
-  ready(() => { 
+
+  ready(() => {
         new QRCode(document.getElementById("paypalQRCode"),
          {
            text: "${yuansferPaypalQRCodeURL}",

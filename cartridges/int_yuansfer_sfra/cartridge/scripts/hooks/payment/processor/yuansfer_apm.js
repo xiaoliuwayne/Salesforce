@@ -43,7 +43,7 @@ function Handle(basket, paymentInformation) {
  */
 function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var serverErrors = [];
-    var order = dw.order.OrderMgr.getOrder(orderNumber);
+    var order = dw.order.OrderMgr.searchOrder('orderNo={0}', orderNumber);
 
     var result = YuansferAPMHelper.Authorize({ Order: order, OrderNo: orderNumber, PaymentInstrument: paymentInstrument });
 
@@ -69,12 +69,12 @@ function processForm(req, paymentForm, viewFormData) {
 
     viewData.paymentMethod = {
         value: paymentForm.paymentMethod.value,
-        htmlName: paymentForm.paymentMethod.value
+        htmlName: paymentForm.paymentMethod.value,
     };
 
     return {
         error: false,
-        viewData: viewData
+        viewData: viewData,
     };
 }
 

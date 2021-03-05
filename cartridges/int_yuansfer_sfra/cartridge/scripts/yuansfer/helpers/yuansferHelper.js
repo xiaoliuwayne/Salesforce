@@ -25,7 +25,7 @@ function isYuansferAPMPayment(paymentMethod) {
  *
  * @return {boolean} - True if sitepreference is set to true.
  */
-exports.isYuansferEnabled = function () {
+exports.isYuansferEnabled = function() {
     var Site = require('dw/system/Site');
     return Site.current.preferences.custom.yuansferEnable;
 };
@@ -36,7 +36,7 @@ exports.isYuansferEnabled = function () {
 *
 * @returns {string} Yuansfer MerchantNo.
 */
-exports.getYuansferMerchantNo = function () {
+exports.getYuansferMerchantNo = function() {
     return require('dw/system/Site').current.preferences.custom.yuansferMerchantNo;
 };
 
@@ -45,7 +45,7 @@ exports.getYuansferMerchantNo = function () {
 *
 * @returns {string} Yuansfer Token.
 */
-exports.getYuansferToken = function () {
+exports.getYuansferToken = function() {
     return require('dw/system/Site').current.preferences.custom.yuansferToken;
 };
 
@@ -54,7 +54,7 @@ exports.getYuansferToken = function () {
 *
 * @returns {string} Yuansfer StoreNo.
 */
-exports.getYuansferStoreNo = function () {
+exports.getYuansferStoreNo = function() {
     return require('dw/system/Site').current.preferences.custom.yuansferStoreNo;
 };
 
@@ -65,7 +65,7 @@ exports.getYuansferStoreNo = function () {
  * @param {string} locale - the APM locale
  * @return {dw.util.Collection} - filtered payment methods
  */
-exports.getYuansferPaymentMethods = function (applicablePaymentMethods, locale) {
+exports.getYuansferPaymentMethods = function(applicablePaymentMethods, locale) {
     const localeConfig = JSON.parse(require('dw/system/Site').current.getCustomPreferenceValue('yuansferAllowedAPMMethods')) || {};
     const list = localeConfig[locale] != null ? localeConfig[locale] : localeConfig.default;
     const applicablePaymentMethodsIterator = applicablePaymentMethods.iterator();

@@ -5,7 +5,7 @@
     </service-credential>
 
     <service-profile service-profile-id="YuansferProfile">
-        <timeout-millis>3000</timeout-millis>
+        <timeout-millis>10000</timeout-millis>
         <rate-limit-enabled>true</rate-limit-enabled>
         <rate-limit-calls>5</rate-limit-calls>
         <rate-limit-millis>100</rate-limit-millis>
@@ -18,7 +18,7 @@
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
         <log-prefix>Yuansfer</log-prefix>
-        <comm-log-enabled>true</comm-log-enabled>
+        <comm-log-enabled>false</comm-log-enabled>
         <force-prd-enabled>false</force-prd-enabled>
         <mock-mode-enabled>false</mock-mode-enabled>
         <profile-id>YuansferProfile</profile-id>

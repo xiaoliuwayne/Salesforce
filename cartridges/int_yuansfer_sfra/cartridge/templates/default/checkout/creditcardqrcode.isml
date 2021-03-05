@@ -16,7 +16,7 @@
 
     <p>${Resource.msg('creditcard.qrcodealternative', 'yuansfer', null)}:</p>
 	  <a href="${yuansferCreditCardQRCodeURL}" target="_blank">${yuansferCreditCardQRCodeURL}</a>
-    
+
 </div>
 
 <script type="text/javascript">
@@ -25,8 +25,8 @@
 	  if (document.readyState != "loading") callback();
 	  else document.addEventListener("DOMContentLoaded", callback);
 	}
-	
-  ready(() => { 
+
+  ready(() => {
         new QRCode(document.getElementById("creditcardQRCode"),
          {
            text: "${yuansferCreditCardQRCodeURL}",

@@ -2,14 +2,13 @@
 
 /* API Includes */
 var SystemObjectMgr = require('dw/object/SystemObjectMgr');
-var OrderMgr = require('dw/order/OrderMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var PaymentTransaction = require('dw/order/PaymentTransaction');
 var Resource = require('dw/web/Resource');
 var Logger = require('dw/system/Logger');
-var Site = require('dw/system/Site');
 var Transaction = require('dw/system/Transaction');
 var Money = require('dw/value/Money');
+var OrderMgr = require('dw/order/OrderMgr');
 
 /**
  * Helper functions for the cartridge integration.
@@ -74,20 +73,19 @@ var YuansferHelper = {
             // Loop through the payment instruments
             for (var k = 0; k < paymentInstruments.length; k++) {
                 // Get the payment transaction
-                const OrderMgr = require('dw/order/OrderMgr');
                 var paymentTransaction = paymentInstruments[k].getPaymentTransaction();
-                var transactionNo = OrderMgr.getOrder(result[j].orderNo).custom.yuansferTransactionNo;
+                var transactionNo = OrderMgr.getOrder(result[j].orderNo, result[j].orderToken).custom.yuansferTransactionNo;
+
                 // Add the payment transaction to the output
-                if (!this.containsObject(paymentTransaction, data) && this.isTransactionNeeded(paymentTransaction, paymentInstruments[k],transactionNo)) {
+                if (!this.containsObject(paymentTransaction, data) && this.isTransactionNeeded(paymentTransaction, paymentInstruments[k], transactionNo)) {
                     // Build the row data
-                    
-                    
+
                     var row = {
                         id: i,
                         order_no: result[j].orderNo,
                         transaction_id: transactionNo,
                         payment_id: paymentTransaction.paymentInstrument.paymentMethod,
-                        opened: paymentTransaction.custom.yuansferTransactionOpened, 
+                        opened: paymentTransaction.custom.yuansferTransactionOpened,
                         amount: paymentTransaction.amount.value,
                         currency: paymentTransaction.amount.currencyCode,
                         creation_date: paymentTransaction.getCreationDate().toDateString(),
@@ -104,6 +102,10 @@ var YuansferHelper = {
                         row.refundable_amount = this.getRefundableAmount(paymentInstruments);
                     }
 
+                    if (row.refundable_amount === '0.00' && row.transaction_id) {
+                        row.type = 'REFUNDED';
+                        row.data_type = 'REFUNDED';
+                    }
                     // Add the transaction
                     data.push(row);
                     i++;
@@ -150,9 +152,10 @@ var YuansferHelper = {
      * Checks if a transaction should be returned in the reaults.
      * @param {Object} paymentTransaction The paymentTransaction object
      * @param {Object} paymentInstrument The paymentInstrument object
+     * @param {Object} transactionNo The transaction number
      * @returns {boolean} The status of the current transaction
      */
-    isTransactionNeeded: function(paymentTransaction, paymentInstrument,transactionNo) {
+    isTransactionNeeded: function(paymentTransaction, paymentInstrument, transactionNo) {
         // Get an optional transaction id
         // eslint-disable-next-line
         var tid = request.httpParameterMap.get('tid').stringValue;
@@ -176,8 +179,8 @@ var YuansferHelper = {
      * @returns {boolean} The status of the current payment instrument
      */
     isYuansferItem: function(item) {
-        return item.length > 0 && (item.indexOf('YUANSFER_WECHATPAY') >= 0 || item.indexOf('YUANSFER_ALIPAY') >= 0|| item.indexOf('YUANSFER_KAKAOPAY') >= 0 || item.indexOf('YUANSFER_GCASH') >= 0
-        ||item.indexOf('YUANSFER_ALIPAYHK') >= 0|| item.indexOf('YUANSFER_DANA') >= 0||item.indexOf('YUANSFER_CREDITCARD') >= 0 || item.indexOf('YUANSFER_APM') >= 0 || item.indexOf('YUANSFER_PAYPAL') >= 0);
+        return item.length > 0 && (item.indexOf('YUANSFER_WECHATPAY') >= 0 || item.indexOf('YUANSFER_ALIPAY') >= 0 || item.indexOf('YUANSFER_KAKAOPAY') >= 0 || item.indexOf('YUANSFER_GCASH') >= 0
+        || item.indexOf('YUANSFER_ALIPAYHK') >= 0 || item.indexOf('YUANSFER_DANA') >= 0 || item.indexOf('YUANSFER_CREDITCARD') >= 0 || item.indexOf('YUANSFER_APM') >= 0 || item.indexOf('YUANSFER_PAYPAL') >= 0);
     },
 
     /**
@@ -213,18 +216,6 @@ var YuansferHelper = {
     },
 
     /**
-     * Loads an order by track id.
-     * @returns {Object} The loaded order
-     */
-    loadOrderFromRequest: function() {
-        // Get the order from the request
-        // eslint-disable-next-line
-        var trackId = request.httpParameterMap.get('trackId').stringValue;
-
-        return OrderMgr.getOrder(trackId);
-    },
-
-    /**
      * Writes gateway information to the website's custom log files.
      * @param {string} dataType The data type
      * @param {Object} gatewayData The gateway data
@@ -246,7 +237,7 @@ var YuansferHelper = {
      * @returns {Object} The HTTP response
      */
     createRefund: function(params) {
-        const yuansferService = require('*/cartridge/scripts/services/yuansferService');
+        var yuansferService = require('*/cartridge/scripts/services/yuansferService');
         var resp = yuansferService.refund.create(params);
 
         return resp;
@@ -269,82 +260,21 @@ var YuansferHelper = {
     },
 
     /**
-     * Returns a price formatted for processing by the gateway.
-     * @param {number} amount The amount to format
-     * @returns {number} The formatted amount
+     *  Change refund status
+     * @param {Object} params parameters
      */
-    getFormattedPrice: function(amount, currency) {
-        var totalFormated;
-        if (currency) {
-            var yuansferFormateBy = this.getYuansferFormatedValue(currency);
-            totalFormated = amount * yuansferFormateBy;
-    
-            return totalFormated.toFixed();
-        } else {
-            totalFormated = amount * 100;
-            return totalFormated.toFixed();
-        }
-    },
-
-    setPaymentStatus: function(order) {
-        var paymentInstruments = order.getPaymentInstruments().toArray(),
-            amountPaid = 0,
-            orderTotal = order.getTotalGrossPrice().getValue();
-    
-        for(var i=0; i<paymentInstruments.length; i++) {
-            var paymentTransaction = paymentInstruments[i].paymentTransaction;
-            if(paymentTransaction.type.value === 'CAPTURE') {
-                amountPaid += paymentTransaction.amount.value;
-                if(amountPaid > orderTotal) {
-                    amountPaid = orderTotal;
-                }
-            } else if(paymentTransaction.type.value === 'CREDIT') {
-                amountPaid -= paymentTransaction.amount.value;
-            }
-        }
-    
-        if(amountPaid === orderTotal) {
-            order.setPaymentStatus(order.PAYMENT_STATUS_PAID);
-        } else if(amountPaid >= 0.01) {
-            order.setPaymentStatus(order.PAYMENT_STATUS_PARTPAID);
-        } else {
-            order.setPaymentStatus(order.PAYMENT_STATUS_NOTPAID);
-        }
-    
-    },
-
-    /**
-     * Currency conversion mapping.
-     * @param {string} currency The currency code
-     * @returns {number} The conversion factor
-     */
-    getYuansferFormatedValue: function(currency) {
-        if (yuansferCurrencyConfig.x1.currencies.match(currency)) {
-            return yuansferCurrencyConfig.x1.multiple;
-        } else if (yuansferCurrencyConfig.x1000.currencies.match(currency)) {
-            return yuansferCurrencyConfig.x1000.multiple;
-        }
-        return 100;
-    },
-
     paymentRefunded: function(params) {
-
         // Load the order
-        var order = OrderMgr.getOrder(params.orderNumber);
+        var order = OrderMgr.searchOrder('orderNo={0}', params.orderNumber);
 
         // Get the payment processor id
         var paymentProcessorId = order.paymentInstrument.paymentTransaction.paymentProcessor.ID;
         var paymentProcessor = order.paymentInstrument.paymentTransaction.paymentProcessor;
         // Create the refunded transaction
         var paymentInstrument;
-        var amount = new Money(params.amount,params.currency);
+        var amount = new Money(params.amount, params.currency);
         Transaction.wrap(function() {
-            try{
-                paymentInstrument = order.createPaymentInstrument(paymentProcessorId,amount);
-            } catch(e){
-                var a = e;
-            }
-            
+            paymentInstrument = order.createPaymentInstrument(paymentProcessorId, amount);
 
             paymentInstrument.paymentTransaction.transactionID = params.orderNumber;
             paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
@@ -352,29 +282,56 @@ var YuansferHelper = {
             paymentInstrument.paymentTransaction.custom.yuansferTransactionOpened = false;
             paymentInstrument.paymentTransaction.setType(PaymentTransaction.TYPE_CREDIT);
 
+            var setPaymentPaymentInstruments = order.getPaymentInstruments().toArray();
+            var amountPaid = 0;
+            var orderTotal = order.getTotalGrossPrice().getValue();
+
+            for (var i = 0; i < setPaymentPaymentInstruments.length; i++) {
+                var paymentTransaction = setPaymentPaymentInstruments[i].paymentTransaction;
+                if (paymentTransaction.type.value === 'CAPTURE') {
+                    amountPaid += paymentTransaction.amount.value;
+                    if (amountPaid > orderTotal) {
+                        amountPaid = orderTotal;
+                    }
+                } else if (paymentTransaction.type.value === 'CREDIT') {
+                    amountPaid -= paymentTransaction.amount.value;
+                }
+            }
+            var Order = require('dw/order/Order');
+            if (amountPaid === orderTotal) {
+                order.setPaymentStatus(Order.PAYMENT_STATUS_PAID);
+            } else if (amountPaid >= 0.01) {
+                order.setPaymentStatus(Order.PAYMENT_STATUS_PARTPAID);
+            } else {
+                order.setPaymentStatus(Order.PAYMENT_STATUS_NOTPAID);
+                OrderMgr.cancelOrder(order);
+            }
         });
     },
 
-    getYuansferToken : function(){
+    // Get Yuansfer token from custom preference
+    getYuansferToken: function() {
         return require('dw/system/Site').current.preferences.custom.yuansferToken;
     },
 
-    getYuansferStoreNo : function(){
+    // Get Yuansfer store number from custom preference
+    getYuansferStoreNo: function() {
         return require('dw/system/Site').current.preferences.custom.yuansferStoreNo;
     },
 
-    getYuansferMerchantNo : function(){
+    // Get Yuansfer merchant number from custom preference
+    getYuansferMerchantNo: function() {
         return require('dw/system/Site').current.preferences.custom.yuansferMerchantNo;
     },
-    isYuansferEnabled:function () {
+
+    // Get Yuansfer enable status from custom preference
+    isYuansferEnabled: function() {
         var Site = require('dw/system/Site');
         return Site.current.preferences.custom.yuansferEnable;
-    }
-    
+    },
 };
 
 /*
  * Module exports
  */
-
 module.exports = YuansferHelper;

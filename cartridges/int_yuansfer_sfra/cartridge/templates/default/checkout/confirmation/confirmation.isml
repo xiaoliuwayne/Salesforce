@@ -35,28 +35,28 @@
 			            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_ALIPAY'}"/>
                             <isset name="isAlipay" value="${true}" scope="page" />
-                            <isbreak/> 
+                            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_DANA'}"/>
                             <isset name="isDana" value="${true}" scope="page" />
-                            <isbreak/>    
+                            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_GCASH'}"/>
                             <isset name="isGCash" value="${true}" scope="page" />
-                            <isbreak/>    
+                            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_ALIPAYHK'}"/>
                             <isset name="isAlipayHK" value="${true}" scope="page" />
-                            <isbreak/>    
+                            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_KAKAOPAY'}"/>
                             <isset name="isKakaoPay" value="${true}" scope="page" />
-                            <isbreak/>    
+                            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_CREDITCARD'}"/>
                             <isset name="isCreditCard" value="${true}" scope="page" />
-                            <isbreak/>  
+                            <isbreak/>
                         <iselseif condition="${payment.paymentMethod === 'YUANSFER_PAYPAL'}"/>
                             <isset name="isPaypal" value="${true}" scope="page" />
-                            <isbreak/> 
+                            <isbreak/>
 			        </isif>
 			    </isloop>
-                
+
                 <isif condition="${isWeChatPay}">
                 	<isinclude template="checkout/wechatpayqrcode" />
                 <iselseif condition="${isAlipay}"/>

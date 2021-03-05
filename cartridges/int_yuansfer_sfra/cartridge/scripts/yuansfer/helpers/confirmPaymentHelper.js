@@ -1,36 +1,31 @@
 /* eslint-env es6 */
 /* eslint-disable no-plusplus */
-/* global request, response */
+/* global response */
 
 'use strict';
 
 // /* global request, response */
 
-const Mac = require('dw/crypto/Mac');
-const Encoding = require('dw/crypto/Encoding');
 const Transaction = require('dw/system/Transaction');
-const CustomObjectMgr = require('dw/object/CustomObjectMgr');
-const Site = require('dw/system/Site');
 const Logger = require('dw/system/Logger');
 const OrderMgr = require('dw/order/OrderMgr');
-const Order = require('dw/order/Order');
 
-exports.processIncomingNotification = function (params) {
+exports.processIncomingNotification = function(params) {
     var json = params;
     try {
-        var success = Transaction.wrap(function () {
+        var success = Transaction.wrap(function() {
             if (json == null || json.transactionNo == null) {
                 return false;
             }
             var yuansferHelper = require('*/cartridge/scripts/yuansfer/helpers/yuansferHelper');
             var token = yuansferHelper.getYuansferToken();
             var orderId = json.reference.replace(token, '');
-            var order = OrderMgr.getOrder(orderId);
+            var order = OrderMgr.searchOrder('orderNo={0}', orderId);
             const Order = require('dw/order/Order');
             if (!order) {
                 return false;
             }
-            if (order.status === Order.ORDER_STATUS_CREATED) {
+            if (order.status.value === Order.ORDER_STATUS_CREATED) {
                 OrderMgr.placeOrder(order);
             }
             order.custom.yuansferIsPaymentInReview = false; // eslint-disable-line no-param-reassign

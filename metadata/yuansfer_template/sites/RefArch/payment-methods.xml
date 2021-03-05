@@ -23,8 +23,6 @@
         <enabled-flag>true</enabled-flag>
         <processor-id>YUANSFER_APM</processor-id>
         <currencies>
-            <currency>GBP</currency>
-            <currency>HKD</currency>
             <currency>CNY</currency>
             <currency>USD</currency>
         </currencies>
@@ -35,7 +33,6 @@
         <enabled-flag>false</enabled-flag>
         <processor-id>YUANSFER_APM</processor-id>
         <currencies>
-            <currency>KRW</currency>
             <currency>USD</currency>
         </currencies>
     </payment-method>
@@ -45,7 +42,6 @@
         <enabled-flag>false</enabled-flag>
         <processor-id>YUANSFER_APM</processor-id>
         <currencies>
-            <currency>PHP</currency>
             <currency>USD</currency>
         </currencies>
     </payment-method>
@@ -55,7 +51,6 @@
         <enabled-flag>false</enabled-flag>
         <processor-id>YUANSFER_APM</processor-id>
         <currencies>
-            <currency>IDR</currency>
             <currency>USD</currency>
         </currencies>
     </payment-method>
@@ -65,7 +60,6 @@
         <enabled-flag>false</enabled-flag>
         <processor-id>YUANSFER_APM</processor-id>
         <currencies>
-            <currency>HKD</currency>
             <currency>USD</currency>
         </currencies>
     </payment-method>

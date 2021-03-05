@@ -17,9 +17,9 @@ var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
  */
 function collectParams(collector, payload, prefix) {
     if (payload && typeof payload === 'object') {
-        Object.keys(payload).forEach(function (key) {
-            let paramName = prefix && prefix.length ? prefix + '[' + (Array.isArray(payload) ? '' : key) + ']' : key;
-            let paramValue = payload[key];
+        Object.keys(payload).forEach(function(key) {
+            var paramName = prefix && prefix.length ? prefix + '[' + (Array.isArray(payload) ? '' : key) + ']' : key;
+            var paramValue = payload[key];
 
             if (paramValue === null || typeof paramValue === 'undefined') {
                 paramValue = '';
@@ -42,11 +42,11 @@ function collectParams(collector, payload, prefix) {
  */
 function payloadToBody(payload) {
     if (payload) {
-        const payloadParamsCollector = {
+        var payloadParamsCollector = {
             params: [],
-            addParam: function (name, value) {
+            addParam: function(name, value) {
                 this.params.push(encodeURIComponent(name) + '=' + encodeURIComponent(value));
-            }
+            },
         };
 
         collectParams(payloadParamsCollector, payload);
@@ -75,13 +75,11 @@ function getYuansferServiceDefinition() {
          * @param {string} requestObject - Request object, containing the end point, query string params, payload etc.
          * @returns {string} - The body of HTTP request
          */
-        createRequest: function (svc, requestObject) {
-            const Site = require('dw/system/Site');
+        createRequest: function(svc, requestObject) {
+            svc.addHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
 
-            svc.addHeader('Content-Type','application/x-www-form-urlencoded;charset=UTF-8');
-        
-            var URL =  svc.configuration.credential.URL;
-            
+            var URL = svc.configuration.credential.URL;
+
             URL += requestObject.endpoint;
 
             svc.setURL(URL);
@@ -108,9 +106,9 @@ function getYuansferServiceDefinition() {
          * @param {dw.net.HTTPClient} httpClient - HTTP client instance
          * @returns {string} - Response body in case of a successful request or null
          */
-        parseResponse: function (svc, httpClient) {
+        parseResponse: function(svc, httpClient) {
             return JSON.parse(httpClient.text);
-        }
+        },
     });
 }
 
@@ -128,24 +126,25 @@ function YuansferServiceError(callResult) {
         message += ': ' + callResult.errorMessage;
     }
 
-    const err = new Error(message);
+    var err = new Error(message);
     err.callResult = callResult;
     err.name = 'YuansferServiceError';
 
     return err;
 }
 
-/*
-* @param {Object} requestObject - An object having details for the request to
-*   be made, including endpoint, payload etc.
-* @return {dw.svc.Result} - Result returned by the call.
-*/
+/**
+ * Call service
+ *
+ * @param {Object} requestObject - An object having details for the request tobe made, including endpoint, payload etc.
+ * @return {dw.svc.Result} - Result returned by the call.
+ */
 function callService(requestObject) {
-   if (!requestObject) {
-       throw new Error('Required requestObject parameter missing or incorrect.');
-   }
+    if (!requestObject) {
+        throw new Error('Required requestObject parameter missing or incorrect.');
+    }
 
-   const callResult = getYuansferServiceDefinition().call(requestObject);
+    var callResult = getYuansferServiceDefinition().call(requestObject);
 
     if (!callResult.ok) {
         throw new YuansferServiceError(callResult);
@@ -156,12 +155,12 @@ function callService(requestObject) {
 
 // https://mapi.yuansfer.com/app-data-search/v3/refund
 exports.refund = {
-    create: function (params) {
+    create: function(params) {
         var requestObject = {
             endpoint: '/app-data-search/v3/refund',
             httpMethod: 'POST',
-            payload: params
+            payload: params,
         };
         return callService(requestObject);
     },
-}
+};

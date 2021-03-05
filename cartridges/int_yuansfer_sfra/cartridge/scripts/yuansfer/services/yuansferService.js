@@ -19,7 +19,7 @@ const LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
  */
 function collectParams(collector, payload, prefix) {
     if (payload && typeof payload === 'object') {
-        Object.keys(payload).forEach(function (key) {
+        Object.keys(payload).forEach(function(key) {
             let paramName = prefix && prefix.length ? prefix + '[' + (Array.isArray(payload) ? '' : key) + ']' : key;
             let paramValue = payload[key];
 
@@ -46,9 +46,9 @@ function payloadToBody(payload) {
     if (payload) {
         const payloadParamsCollector = {
             params: [],
-            addParam: function (name, value) {
+            addParam: function(name, value) {
                 this.params.push(encodeURIComponent(name) + '=' + encodeURIComponent(value));
-            }
+            },
         };
 
         collectParams(payloadParamsCollector, payload);
@@ -77,9 +77,7 @@ function getYuansferServiceDefinition() {
          * @param {string} requestObject - Request object, containing the end point, query string params, payload etc.
          * @returns {string} - The body of HTTP request
          */
-        createRequest: function (svc, requestObject) {
-            const Site = require('dw/system/Site');
-
+        createRequest: function(svc, requestObject) {
             svc.addHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
 
             var URL = 'https://mapi.yuansfer.yunkeguan.com';
@@ -110,28 +108,15 @@ function getYuansferServiceDefinition() {
          * @param {dw.net.HTTPClient} httpClient - HTTP client instance
          * @returns {string} - Response body in case of a successful request or null
          */
-        parseResponse: function (svc, httpClient) {
+        parseResponse: function(svc, httpClient) {
             return JSON.parse(httpClient.text);
         },
 
-        mockCall: function (svc) {
+        mockCall: function(svc) {
             var mockResponsesHelper = require('./mockResponsesHelper');
 
             return mockResponsesHelper.getMockedResponse(svc);
         },
-
-
-        /**
-         * A callback that allows filtering communication URL, request, and response
-         * log messages. Must be implemented to have messages logged on Production.
-         *
-         * @param {string} msg - The original message to log.
-         * @returns {string} - The original message itself, as no sensitive data is
-         *   communicated.
-         */
-        filterLogMessage: function (msg) {
-            return maskCVC(maskCardNumber(msg));
-        }
     });
 }
 
@@ -156,11 +141,11 @@ function YuansferServiceError(callResult) {
     return err;
 }
 
-/*
-* @param {Object} requestObject - An object having details for the request to
-*   be made, including endpoint, payload etc.
-* @return {dw.svc.Result} - Result returned by the call.
-*/
+/**
+ * Call service
+ * @param {Object} requestObject request object
+ * @return {Object} - return result object
+ */
 function callService(requestObject) {
     if (!requestObject) {
         throw new Error('Required requestObject parameter missing or incorrect.');
@@ -177,24 +162,24 @@ function callService(requestObject) {
 
 // https://mapi.yuansfer.com/online/v3/secure-pay
 exports.securePay = {
-    create: function (params) {
+    create: function(params) {
         var requestObject = {
             endpoint: '/online/v3/secure-pay',
             httpMethod: 'POST',
-            payload: params
+            payload: params,
         };
         return callService(requestObject);
-    }
+    },
 };
 
 // https://mapi.yuansfer.com/app-data-search/v3/tran-query
 exports.tranQuery = {
-    create: function (params) {
+    create: function(params) {
         var requestObject = {
             endpoint: '/app-data-search/v3/tran-query',
             httpMethod: 'POST',
-            payload: params
+            payload: params,
         };
         return callService(requestObject);
-    }
+    },
 };

@@ -22,7 +22,7 @@ function Handle(args) {
         yuansferDanaQRCodeURL: paramsMap.yuansfer_dana_qrcode_url.stringValue,
         yuansferAlipayHKQRCodeURL: paramsMap.yuansfer_alipayhk_qrcode_url.stringValue,
         yuansferGCashQRCodeURL: paramsMap.yuansfer_gcash_qrcode_url.stringValue,
-        yuansferKakaoPayQRCodeURL: paramsMap.yuansfer_KakaoPay_qrcode_url.stringValue
+        yuansferKakaoPayQRCodeURL: paramsMap.yuansfer_KakaoPay_qrcode_url.stringValue,
     };
 
     try {
@@ -30,14 +30,14 @@ function Handle(args) {
         checkoutHelper.createYuansferPaymentInstrument(args.Basket, selectedPaymentMethodID, params);
         Transaction.commit();
         return {
-            success: true
+            success: true,
         };
     } catch (e) {
         Transaction.rollback();
         return {
             success: false,
             error: true,
-            errorMessage: e.message
+            errorMessage: e.message,
         };
     }
 }
@@ -52,13 +52,13 @@ function Authorize(args) {
     const paymentInstrument = args.PaymentInstrument;
     const paymentProcessor = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod()).getPaymentProcessor();
 
-    Transaction.wrap(function () {
+    Transaction.wrap(function() {
         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
     });
 
     return {
         authorized: true,
-        error: false
+        error: false,
     };
 }
 

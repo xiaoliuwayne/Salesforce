@@ -1,4 +1,4 @@
-const { assert, expect } = require('chai');
+const { assert } = require('chai');
 const Request = require('superagent');
 const config = require('../config');
 const Url = config.sfraUrl;

@@ -18,7 +18,7 @@ if (yuansferHelper.isYuansferEnabled()) {
     };
 
     COHelpers.createOrder = function createOrder(currentBasket) {
-        const yuansferCheckoutHelper = require('../../../../int_yuansfer_core/cartridge/scripts/yuansfer/helpers/paymentprocessors/node_modules/*/cartridge/scripts/yuansfer/helpers/checkoutHelper');
+        const yuansferCheckoutHelper = require('*/cartridge/scripts/yuansfer/helpers/checkoutHelper');
         return yuansferCheckoutHelper.createOrder(currentBasket);
     };
 }

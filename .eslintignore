@@ -1,6 +1,3 @@
-cartridges/app_storefront_base/cartridge/static/
-coverage/
-doc/
-bin/
-codecept.conf.js
-cartridges/bm_app_storefront_base/cartridge/static/
+Cartridges/bm_yuansfer/cartridge/static/
+Cartridges/int_yuansfer_sfra/cartridge/static/
+tests/

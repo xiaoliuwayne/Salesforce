@@ -15,10 +15,10 @@ var base = module.superModule;
  *      current cart
  */
 function applicablePaymentMethods(paymentMethods) {
-    return collections.map(paymentMethods, function (method) {
+    return collections.map(paymentMethods, function(method) {
         return {
             ID: method.ID,
-            name: method.name
+            name: method.name,
         };
     });
 }
@@ -54,7 +54,7 @@ function Payment(currentBasket, currentCustomer, countryCode) {
             if (currentPaymentMethod.paymentProcessor.ID !== 'YUANSFER_APM' && currentPaymentMethod.paymentProcessor.ID !== 'YUANSFER_CREDIT') {
                 applicablePaymentMethodsWithoutYuansfer.push({
                     ID: paymentMethod.ID,
-                    name: paymentMethod.name
+                    name: paymentMethod.name,
                 });
             }
         }

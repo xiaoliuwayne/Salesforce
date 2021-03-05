@@ -1,6 +1,10 @@
 const Calendar = require('../util/Calendar');
 const Collection = require('../util/dw.util.Collection');
 
+let mockPreferences = {
+    merchantNo: 'merchantNo'
+};
+
 const preferences = {
     smart: true,
     galleryDisplay: true,

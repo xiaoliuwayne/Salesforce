@@ -14,6 +14,8 @@
 	<p>${Resource.msg('kakaopay.scanqrcode', 'yuansfer', null)} ${pdict.order.totals.grandTotal}</p>
 	<div id="kakaopayQRCode"></div>
 
+  <p>${Resource.msg('kakaopay.qrcodealternative', 'yuansfer', null)}:</p>
+  <a href="${yuansferKakaoPayQRCodeURL}" target="_blank">${yuansferKakaoPayQRCodeURL}</a>
 </div>
 
 <script type="text/javascript">
@@ -22,13 +24,19 @@
 	  if (document.readyState != "loading") callback();
 	  else document.addEventListener("DOMContentLoaded", callback);
 	}
-	
-	    ready(() => { 
-        var elem = document.createElement("img");
-        elem.setAttribute("height", "100");
-        elem.setAttribute("width", "100");
-        elem.src= "${yuansferKakaoPayQRCodeURL}";
-	    document.getElementById("kakaopayQRCode").appendChild(elem);
+
+	    ready(() => {
+        // var elem = document.createElement("img");
+        // elem.setAttribute("height", "100");
+        // elem.setAttribute("width", "100");
+        // elem.src= "${yuansferKakaoPayQRCodeURL}";
+	    // document.getElementById("kakaopayQRCode").appendChild(elem);
+		    new QRCode(document.getElementById("kakaopayQRCode"),
+         {
+           text: "${yuansferKakaoPayQRCodeURL}",
+           width: 100,
+           height: 100
+         });
 	});
 
 </script>

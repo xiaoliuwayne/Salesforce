@@ -146,8 +146,13 @@ function showErrorMessage(selector) {
     );
 }
 
+/**
+ * Used to calculate verify sign
+ * @param {string} contents
+ * @param {string} token
+ */
 function calculateVerifySign(contents, token) {
-    // 1.对参数进行排序，然后用a=1&b=2..的形式拼接
+    // 1.sort parameter，connect them with a=1&b=2.. format
     var sortArray = [];
 
     Object.keys(contents).sort().forEach(function (k) {
@@ -156,19 +161,21 @@ function calculateVerifySign(contents, token) {
         }
     });
 
-    // 对token进行md5，得到的结果追加到sortArray之后
+    // md5 encrypt token，append result after sortArray
     sortArray.push(MD5(token));
 
     var tempStr = sortArray.join('&');
-    // console.log('tempStr:', tempStr);
 
-    // 对tempStr 再进行一次md5加密得到verifySign
+    // md5 encrypt tempStr to get verify sign
     var verifySign = MD5(tempStr);
-    // console.log('veirfySign:', verifySign)
 
     return verifySign;
 }
 
+/**
+ * Used to determine if string is Json String
+ * @param {string} str
+ */
 function isJson(str) {
     try {
         JSON.parse(str);
@@ -179,10 +186,38 @@ function isJson(str) {
 }
 
 /**
+ *  Making ajax call to refund
+ * @param {string} data
+ * @param {string} url
+ */
+function ajaxCall(data,url){
+
+    return new Promise(resolve=>{
+        jQuery.ajax({
+            type:'POST',
+            url:url,
+            data:data,
+            beforeSend: function () {
+                jQuery('#loading').show();
+            },
+            complete: function () {
+                jQuery('#loading').hide();
+            },
+            success: function(res){
+                resolve(res);
+            },
+            error: function(error){
+                resolve(res);
+            }
+        });
+    })
+}
+
+/**
  * Perform a transaction action.
  * @param {string} task The task to perform
  */
-function performAction(task) {
+async function performAction(task) {
     // set params
     var actionUrl = jQuery('[id="actionControllerUrl"]').val();
     var currency = jQuery('[id="' + task + '_currency"]').text();
@@ -205,39 +240,23 @@ function performAction(task) {
     data.verifySign = verifySign;
     data.orderNumber = orderNumber;
     // Send the AJAX request
-    jQuery.ajax({
-        type: 'POST',
-        url: actionUrl,
-        data: data,
-        beforeSend:function(){
-            jQuery('#loading').show();
-        },
-        complete: function() {
-            jQuery('#loading').hide();
-        },
-        success: function(res) {
-            if (isJson(res)) {
-                var response = JSON.parse(res);
-                console.log(response.ret_code);
-                if (response.ret_code != '000100') {
-                    showErrorMessage('yuansferErrorMessage');
-                } else {
-                    // Close the modal window
-                    jQuery('.yuansferModal .modal-content .close').trigger('click');
-
-                    // Reload the table data
-                    // eslint-disable-next-line
-                    getTransactions(reloadTable);
-                    setTimeout(function(){
-                        location.reload();
-                    },3000);
-                }
-            }
-        },
-        error: function(request, status, error) {
-            // eslint-disable-next-line no-console
-            console.log(error);
-        },
+    ajaxCall(data,actionUrl).then(function(res){
+        var response = JSON.parse(res);
+        console.log(response.ret_code);
+        if (response.ret_code != '000100') {
+            console.log("failed");
+            showErrorMessage('yuansferErrorMessage');
+        } else {
+            // Close the modal window
+            jQuery('.yuansferModal .modal-content .close').trigger('click');
+            console.log("success");
+            // Reload the table data
+            // eslint-disable-next-line
+            getTransactions(reloadTable);
+            setTimeout(function () {
+                location.reload();
+            }, 1500);
+        }
     });
 }
 
@@ -252,7 +271,6 @@ function reloadTable(tableData) {
     // Show the success message
     // eslint-disable-next-line
     showSuccessMessage();
-
 }
 
 /**
@@ -270,6 +288,6 @@ function showSuccessMessage() {
     );
 }
 
-jQuery(window).load(function() {
+jQuery(window).load(function () {
     jQuery('#loading').hide();
 });
